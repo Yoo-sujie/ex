@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.manager.dao.ManagerDAO">
+
+
+	
+	<!-- 승인관리 리스트 -->
+	<select id="selectApprovalList" resultType="ApprovalVO">
+		<![CDATA[
+		SELECT sellNo
+			  ,sellTitle
+			  ,memberNic
+			  ,sellAcknowledgment
+              ,sellWriteDate
+              FROM
+		(SELECT ROWNUM AS RNUM
+			  ,a.sell_no as sellNo
+			  ,a.sell_title as sellTitle
+			  ,b.member_nic as memberNic
+			  ,CASE WHEN a.sell_acknowledgment = 'Y' THEN '승인완료' WHEN a.sell_acknowledgment = 'N' THEN '승인대기' END AS sellAcknowledgment
+              ,to_char(a.sell_write_date,'YYYY/MM/DD') as sellWriteDate    
+		FROM sell a
+			 left join members b on(a.sell_seller_id = b.member_id)
+		ORDER BY sell_no desc)
+		WHERE RNUM BETWEEN 1 AND 10
+		]]> <!-- CASE WHEN은 if문과 같음. sell_acknowlegment가 'Y' 이면 '승인완료' 'N'이면 '승인대기' -->
+		
+	</select>
+	
+	
+
+	<!-- 승인관리 검색 리스트 -->				<!-- 조회결과							결과반환 -->
+	<select id="selectApprovalSearchList" parameterType="java.util.HashMap" resultType="ApprovalVO">
+		<![CDATA[
+		select sellNo
+				,sellTitle
+				,memberNic
+				,sellAcknowledgment
+				,sellWriteDate
+				from
+		(SELECT rownum as rnum
+			    ,a.sell_no as sellNo
+			    ,a.sell_title as sellTitle
+			    ,b.member_nic as memberNic
+			    ,CASE WHEN a.sell_acknowledgment = 'Y' THEN '승인완료' WHEN a.sell_acknowledgment = 'N' THEN '승인대기' END AS sellAcknowledgment
+                ,to_char(a.sell_write_date,'YYYY/MM/DD') as sellWriteDate    
+		FROM sell a
+		     left join members b on(a.sell_seller_id = b.member_id)
+		WHERE 1=1
+		]]>
+		
+		<!-- approvalBoard.jsp에서  (select id= 'sellAcknowledgment')의 value값을 if문으로 비교 --> <!-- WHERE 1=1 -->
+		<if test="sellAcknowledgment eq 1">  
+			and sell_acknowledgment = 'Y' 
+		</if>
+		
+		<if test="sellAcknowledgment eq 2">
+			and sell_acknowledgment = 'N'
+		</if>
+		
+		<if test="sellSearch eq 0">
+			and sell_title like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="sellSearch eq 1">
+			and (sell_title like '%' || #{sellSearchText} || '%' or sell_contents like '%' || #{sellSearchText} || '%')
+		</if>
+		
+		<if test="sellSearch eq 2">
+			and sell_contents like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="sellSearch eq 3">
+			and member_nic like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="firstSearchDate != '' and firstSearchDate != null">
+			<![CDATA[
+			and sell_write_date >= #{firstSearchDate}
+			]]>
+		</if>
+		
+		<if test="lastSearchDate != ''">
+			<![CDATA[
+			and sell_write_date <= #{lastSearchDate}
+			]]>
+			
+		</if>
+		
+		
+		ORDER BY sell_no desc)
+		where rnum between #{startIndex} and #{lastIndex}
+		
+		
+	</select>
+ 
+ 	
+ 
+ 	<!-- 승인관리 검색 리스트 -->				<!-- 조회결과							결과반환 -->
+	<select id="totalCnt" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+		SELECT count(sell_no) 
+		FROM sell
+		WHERE 1=1
+		]]>
+		
+		<!-- approvalBoard.jsp에서  (select id= 'sellAcknowledgment')의 value값을 if문으로 비교 --> <!-- WHERE 1=1 -->
+		<if test="sellAcknowledgment eq 1">  
+			and sell_acknowledgment = 'Y' 
+		</if>
+		
+		<if test="sellAcknowledgment eq 2">
+			and sell_acknowledgment = 'N'
+		</if>
+		
+		<if test="sellSearch eq 0">
+			and sell_title like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="sellSearch eq 1">
+			and (sell_title like '%' || #{sellSearchText} || '%' or sell_contents like '%' || #{sellSearchText} || '%')
+		</if>
+		
+		<if test="sellSearch eq 2">
+			and sell_contents like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="sellSearch eq 3">
+			and member_nic like '%' || #{sellSearchText} || '%'
+		</if>
+		
+		<if test="firstSearchDate != '' and firstSearchDate != null">
+			<![CDATA[
+			and sell_write_date >= #{firstSearchDate}
+			]]>
+		</if>
+		
+		<if test="lastSearchDate != '' and lastSearchDate != null">
+			<![CDATA[
+			and sell_write_date <= #{lastSearchDate}
+			]]>
+			
+		</if>
+		
+		
+	</select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 	<!-- 승인대기목록글 상세보기 -->
+	<select id="selectDetail" resultType="managerDetailVO" parameterType="int"> 
+		<![CDATA[
+		SELECT a.sell_no 
+			  ,c.sell_place_name     
+       		  ,d.member_nic 
+       		  ,b.sell_category_name
+       		  ,a.sell_title 
+       		  ,a.sell_contents 
+       		  ,a.sell_price
+       		  ,CASE WHEN a.sell_bargain = 'Y' THEN '가능' WHEN a.sell_bargain = 'N' THEN '불가' END AS sell_bargain
+       		  ,a.sell_acknowledgment
+       		  ,to_char(a.sell_write_date,'YY/mm/dd') as sell_write_date
+    	FROM sell a
+    		 join sell_categories b on(a.sell_category_no = b.sell_category_no)
+    		 join sell_place c on(a.sell_place_no = c.sell_place_no)
+    		 left join members d on(a.sell_seller_id = d.member_id)
+    	WHERE a.sell_no = #{param}
+		]]>
+		
+	</select>
+	
+	
+	
+	
+	
+	<!-- 승인완료 update -->
+	<update id="approvalUpdate" parameterType="int"> <!-- parameterType="java.util.HashMap" // WHERE a.sell_no = #{num}-->
+ 		<![CDATA[
+		UPDATE sell
+		SET sell_acknowledgment = CASE
+			WHEN sell_acknowledgment = 'N' THEN 'Y' END
+		WHERE sell_no = #{param}
+		]]>
+	</update>
+
+	
+    <!-- 회원리스트 -->
+	<select id="selectMemberList" resultType="memberStoppedVO">
+		<![CDATA[
+		SELECT a.member_id 
+			  ,a.member_nic 
+			  ,a.member_name 
+			  ,a.member_phone 
+			  ,a.member_email 
+              ,to_char(a.member_join_date,'YYYY/MM/DD') as member_join_date   
+              ,a.member_status 
+              ,count(c.sell_no) as sell_no
+		FROM members a
+    	left join sell b on(a.member_id = b.sell_seller_id)
+    	left join report c on(b.sell_no = c.sell_no)
+    	where a.member_status != 9
+    	group by a.member_id,a.member_nic,a.member_name,a.member_phone,a.member_email,to_char(a.member_join_date,'YYYY/MM/DD'),a.member_status
+		]]> 
+		
+	</select>
+
+
+	<!-- 회원 관리 리스트 페이징 -->
+	<select id="getMemberListPaging" parameterType="java.util.HashMap" resultType="MemberStoppedVO">
+	      select rnum
+              ,member_id
+              ,member_nic
+              ,member_name
+              ,member_phone
+              ,member_email
+              ,member_join_date
+              ,member_status
+              ,sell_no
+          from ( select rownum as rnum
+              ,member_id
+              ,member_nic
+              ,member_name
+              ,member_phone
+              ,member_email
+              ,member_join_date
+              ,member_status
+              ,sell_no 
+              from
+			(select     a.member_id 
+					   ,a.member_nic 
+					   ,a.member_name 
+					   ,a.member_phone 
+					   ,a.member_email 
+		               ,to_char(a.member_join_date,'YYYY/MM/DD') as member_join_date   
+		               ,a.member_status 
+		               ,count(c.sell_no) as sell_no
+               from members a 
+               left join sell b on(a.member_id = b.sell_seller_id)
+    		   left join report c on(b.sell_no = c.sell_no)
+    		   where a.member_status != 9
+    		   group by a.member_id,a.member_nic,a.member_name,a.member_phone,a.member_email,to_char(a.member_join_date,'YYYY/MM/DD'),a.member_status))
+    		   where rnum between #{startIndex} and #{lastIndex}
+               
+	</select>
+
+
+
+	<!-- 회원정지 -->
+	<update id="stopAccount" parameterType="String" >
+ 		<![CDATA[
+ 		UPDATE members
+ 		SET member_status = '2'
+ 		WHERE member_id = #{id}
+
+		]]>
+	</update>
+	
+	<update id="undoStopAccount" parameterType="String" >
+ 		<![CDATA[
+ 		UPDATE members
+ 		SET member_status = '1'
+ 		WHERE member_id = #{id}
+
+		]]>
+	</update>
+	
+	
+		<insert id="insertSellPlace" parameterType="java.util.HashMap">
+		INSERT INTO SELL_PLACE VALUES((SELECT MAX(SELL_PLACE_NO)+1 FROM SELL_PLACE),(SELECT CTPRVN_CD FROM KOREA_SD WHERE CTP_KOR_NM = #{sido}),(SELECT SIG_CD FROM KOREA_SGG WHERE SIG_KOR_NM = #{sgg} and SIG_CD LIKE (SELECT CTPRVN_CD||'%' FROM KOREA_SD WHERE CTP_KOR_NM = #{sido})),#{name},#{addr},#{lat},#{lon})
+	</insert>
+	
+	<insert id="insertSellPlaceItem" parameterType="java.util.HashMap">
+		INSERT INTO SELL_PLACE_ITEM VALUES((SELECT MAX(SELL_PLACE_NO) FROM SELL_PLACE),#{no})
+	</insert>
+	
+
+
+</mapper>

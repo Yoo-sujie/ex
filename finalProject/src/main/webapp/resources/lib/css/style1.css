@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+#logout, .navbar-brand, #loginPage {
+	color: #000000;
+}
+
+.loginNick {
+	width: 80%;
+	text-align: right;
+}
+
+.header_background {
+	height: 110px;
+}
+
+/*body 초기화*/
+.back {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", serif;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden; 
+  background: linear-gradient(90deg, #FFFFFF, #FFFFFF, #FFFFFF, #FFFFFF, #FFFFFF);
+  width: 100%;
+}
+
+.login_join_h1 {
+  margin: 2em 0 1.5em 0;
+}
+
+.header_a {
+	text-decoration: none;
+}
+
+.navigation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  background: none;
+  border-bottom:1px solid #000030;
+  border-top:1px solid #000030;
+}
+
+
+.header_ul, .header_li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#main-menu > .header_li {
+  float: left;
+  position: relative;
+}
+
+#main-menu > .header_li > .header_a {
+  font-size: 12px;
+  color: #000030;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  display: block;
+  padding: 14px 36px;
+  border-right: 1px solid rgba(0,0,0,0.15);
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+#main-menu > .header_li:nth-child(1) > .header_a {
+  border-left: 1px solid rgba(0,0,0,0.15);
+}
+
+#sub-menu {
+  position: absolute;
+  background: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s ease-in;
+}
+
+#sub-menu > .header_li {
+  padding: 16px 28px;
+  border-bottom:1px solid #000030;
+  border-left:1px solid #000030;
+  border-right:1px solid #000030;
+}
+
+#sub-menu > .header_li > .header_a {
+  color: #000030;
+  text-decoration: none;
+}
+
+#main-menu > .header_li:hover #sub-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+#sub-menu > .header_li >  .header_a:hover {
+ text-decoration: underline;
+}
+
+/* section {
+  border-top:1px solid #000030;
+  border-bottom:1px solid #000030;
+  color: #FFFFFF;
+  column-width: 15em;
+  background: none;
+  padding: 2em 12em;
+} */
+
+.navbar-brand {
+	padding-top: 50px;
+	height: 150px;
+}
+
+.loading .header_span {
+  display: inline-block;
+  margin: 0 -.075em;
+  animation: loading .7s infinite alternate;
+  color: #000030;
+  font-family: serif;
+  font-size: 80px;
+  text-shadow: -1px 0 #000030, 0 1px #000030, 1px 0 #000030, 0 -1px #000030;
+}
+.loading .header_span:nth-child(2) {
+  animation-delay: .1s;
+}
+.loading .header_span:nth-child(3) {
+  animation-delay: .2s;
+}
+.loading .header_span:nth-child(4) {
+  animation-delay: .3s;
+}
+.loading .header_span:nth-child(5) {
+  animation-delay: .4s;
+}
+.loading .header_span:nth-child(6) {
+  animation-delay: .5s;
+}
+.loading .header_span:nth-child(7) {
+  animation-delay: .6s;
+}
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+  }
+}

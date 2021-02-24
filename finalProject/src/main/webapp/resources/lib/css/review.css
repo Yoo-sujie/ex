@@ -1,0 +1,76 @@
+
+/*
+	#5CD1E5 : 포인트 밝은 하늘
+	#38ADC1 : 포인트 톤다운된 하늘
+*/
+
+
+.main-comment, .main-check{
+	font-size: 13px;
+	color: #7b8895;
+	padding-bottom: 10px;
+	display: table-cell; /*div 태그 안 텍스트 정렬 */
+    vertical-align: middle; /*div 태그 안 텍스트 정렬 */
+}
+
+
+ .main-comment {
+	padding-top: 10px;
+	width: 120px;
+	border-radius: 40px 40px 40px 40px;
+	border: 1px solid #5CD1E5;
+	color: #38ADC1;
+	text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.profile-left-p3 .main-comment:hover {
+	padding-top: 10px;
+	width: 120px;
+	border-radius: 40px 40px 40px 40px;
+	border: 1px solid #38ADC1;
+	color: #FFFFFF;
+	background-color: #38ADC1;
+	text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.profile-left-p3 .main-check {
+	padding-top: 10px;
+	padding-right: 10px;
+	width: 100px;
+	color: #7b8895;
+	text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
+.main-content hr {
+	width: 100%;
+	
+	border-top: 1px dashed #7b8895;
+}
+
+.main-content hr:after {
+	content: '';
+	display: block;
+	margin-top: 10px;
+	border-top: 1px dashed #5CD1E5;
+}
+
+.main-comment2 {
+	display: inline-block;
+	color: #38ADC1;
+}
+
+.mainContent2 {
+	margin-top: 200px;
+	text-align: center;	
+}
+
+.mainContent2 img{
+	width: 105%;
+}

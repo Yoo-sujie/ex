@@ -1,0 +1,126 @@
+@charset "utf-8";
+/* 
+CSS 적용시 색상표 참고하세요
+
+logoColor #2097ef rgba(32,151,239,1) 
+darkColor(footerBackgroundColor) #343a40
+darkColor #4d555e
+middleColor #626d79
+lightColor #7b8895
+
+fontFamily는 사용자가 보는 본문에는 사용하지 X 
+(font-family: 'Jua', sans-serif)
+
+*/
+
+header {
+	width: 100%;
+	max-width: 90%;
+	height: 80px;
+	margin: 20px auto;
+	background-color: #fff;
+	font-family: 'Jua', sans-serif;
+	margin-bottom: 30px;
+}
+
+header > nav.navBox {
+	width:70%;
+	height:80px;
+	float:left;
+}
+
+header > ul.statusBox {
+	width:30%;
+	height:80px;
+	float:left;
+}
+
+/* 로고 */
+.navBox > .logoBox {
+	width: 20%;
+	height: 80px;
+	float:left;
+}
+
+.navBox > .logoBox > a > img{
+	display:block;
+	height: 100%;
+}
+
+/* 메뉴 */
+.navBox > ul#main-menu {
+	width: 70%;
+	display: table;
+	table-layout: fixed;
+}
+
+.navBox > ul#main-menu > li.main {
+	position: relative;
+	display: table-cell;
+	padding-top: 30px;
+ 	line-height: 50px;
+ 	font-size: 18px; 
+ 	text-align: center;
+}
+
+.navBox > ul#main-menu > li.main > ul#sub-menu{
+	position:absolute;
+	width: 100%;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.2s ease-in;
+	background-color: #fff;
+	border-radius: 0px 0px 5px 5px;
+	box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+	box-sizing: border-box;
+	z-index: 999;
+}
+
+.navBox > ul#main-menu > li.main:hover > a {
+	color: #2097ef;
+}
+
+.navBox > ul#main-menu > li.main:hover > ul#sub-menu{
+	opacity: 1;
+	visibility: visible;
+}
+
+.navBox > ul#main-menu > li.main > ul#sub-menu > li.sub {
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+.navBox > ul#main-menu > li.main > ul#sub-menu > li.sub > a {
+	font-size: 1.125rem; /* 18px */
+	display: block;
+	line-height: 20px;
+	padding: 10px 30px;
+	text-align: center;
+}
+
+/* 로그인 상태 */
+.statusBox > li{
+	float: right;
+	line-height: 40px;
+ 	font-size: 18px; 
+ 	text-align: center;
+ 	margin-right: 15px;
+ 	padding-top:30px;
+}
+
+.statusBox > li > span > b{
+	color: #2097ef;
+	letter-spacing: 1px;
+}
+
+.statusBox > li > a.stsBtn{
+	display: block;
+	color: #fff;
+	padding: 0 13px;
+	background-color:#888;
+	box-sizing: border-box;
+	border-radius: 10px;
+}
+
+.statusBox > li > a.stsBtn2 { background-color:#2097ef; }

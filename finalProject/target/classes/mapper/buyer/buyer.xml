@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.buyer.dao.BuyerDAO">
+
+	<!-- <select id="selectMapList" resultType="java.util.HashMap" >
+		<![CDATA[
+		select * from store_imsi
+		]]>		
+		
+	</select> -->
+
+	<!-- <select id="buyerItemList" resultType="buyerVO" >
+		SELECT a.SELL_TITLE, b.SELL_PLACE_NAME, a.SELL_PRICE 
+		FROM SELL s 
+		FULL OUTER JOIN SELL_PLACE b ON a.SELL_PLACE_NO = b.SELL_PLACE_NO 
+		WHERE a.SELL_ACKNOWLEDGMENT = 'Y' AND a.SELL_STATUS = 0
+	</select> -->
+	
+	<!-- <select id="buyerItemList" resultType="buyerVO" >
+		SELECT I.SELL_IMAGE, S.SELL_TITLE, P.SELL_PLACE_NAME, S.SELL_PRICE 
+		FROM SELL_IMAGES I INNER JOIN SELL S ON I.SELL_NO = S.SELL_NO
+			INNER JOIN SELL_PLACE P ON S.SELL_PLACE_NO = P.SELL_PLACE_NO
+		WHERE S.SELL_ACKNOWLEDGMENT = 'Y' AND S.SELL_STATUS = 0
+	</select> -->
+	
+	<!-- <select id="buyerMainOutput" resultType="sellerVO">
+		<![CDATA[
+		SELECT S.SELL_TITLE, S.SELL_WRITE_DATE, S.SELL_CONTENTS, C.SELL_COMMENT_NO, S.SELL_CNT 
+		FROM SELL S INNER JOIN SELL_COMMENT C ON S.SELL_NO = C.SELL_NO 
+		WHERE S.SELL_ACKNOWLEDGMENT = 'Y' AND S.SELL_STATUS = 0 
+		AND S.SELL_NO = #{SELL_NO}
+		]]>
+	</select> -->
+	
+	
+	
+	<!-- AND S.SELL_NO = #{SELL_NO} -->
+	
+	<!-- 판매글 댓글 등록 -->
+	<insert id="sellCommentInsert" parameterType="sellCommentVO">
+		<![CDATA[
+			INSERT INTO SELL_COMMENT 
+			VALUES (
+				#{sell_no, jdbcType=INTEGER}, 
+				#{sell_comment_no, jdbcType=INTEGER}, 
+				#{sell_comment_originno, jdbcType=INTEGER}, 
+				#{sell_comment_groupord, jdbcType=INTEGER}, 
+				#{sell_comment_grouplayer, jdbcType=INTEGER}, 
+				#{sell_comment_writer, jdbcType=VARCHAR}, 
+				#{sell_comment_contents, jdbcType=VARCHAR}, 
+				SYSDATE, 
+				#{sell_comment_secret, jdbcType=INTEGER}, 
+				0
+			)
+		]]>
+	</insert>
+	
+	<!-- 리뷰 등록하기 -->
+   	<insert id="insertReview" parameterType="java.util.HashMap">
+		<![CDATA[  
+     		INSERT INTO REVIEWS (sell_no,seller_id,buyer_id,review_contents,review_rating,review_write_date)
+     		VALUES(
+     			#{sellNo},
+     			#{seller_id},
+     			#{memberId},
+     			#{reviewContents},
+     			#{reviewRating},
+     			default
+     		)
+		]]>
+   	</insert>
+   
+    <!-- 리뷰 이미지 등록하기 -->
+   	<insert id="insertReviewImg" parameterType="java.util.HashMap">
+		<![CDATA[    	
+    		INSERT INTO REVIEWS_IMAGES 
+    		VALUES(
+    			#{sellNo},
+    			#{reviewsImageNo},
+    			#{reviewsImage}
+    		)
+		]]>
+   	</insert>
+
+	<!-- 구매자로 검색하여 후기버튼 보이기 -->
+	<select id="buyerPaySelect" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(SELL_NO) 
+			FROM SELL 
+			WHERE SELL_BUYER_ID = #{sell_buyer_id, jdbcType=VARCHAR}
+			AND SELL_NO = #{sell_no, jdbcType=INTEGER}
+			AND SELL_STATUS = 2
+		]]>
+	</select>
+	
+	<!-- 댓글만 검색 -->
+	<select id="commentGroupSelect" resultType="sellCommentVO">
+		<![CDATA[
+			SELECT SELL_NO
+		      , SELL_COMMENT_NO
+		      , SELL_COMMENT_ORIGINNO
+		      , SELL_COMMENT_GROUPORD
+		      , SELL_COMMENT_GROUPLAYER
+		      , SELL_COMMENT_WRITER
+		      , SELL_COMMENT_CONTENTS
+		      , SELL_COMMENT_WRITE_DATE
+		      , SELL_COMMENT_SECRET
+		      , SELL_COMMENT_STATUS
+			FROM SELL_COMMENT 
+			WHERE SELL_COMMENT_GROUPLAYER = 0 
+			AND SELL_COMMENT_STATUS = 0
+			AND SELL_NO = #{sell_no}
+			ORDER BY SELL_COMMENT_NO
+		]]>
+	</select>
+	
+	<!-- 댓글의 답글 순서 검색 : 가장 큰 순서 -->
+	<select id="commentGroupMaxSelect" resultType="int">
+		<![CDATA[
+			SELECT MAX(SELL_COMMENT_GROUPORD)
+			FROM SELL_COMMENT
+			WHERE SELL_NO = #{sell_no}
+			AND SELL_COMMENT_ORIGINNO = #{sell_comment_originno}
+		]]>
+	</select>
+
+	<!-- 댓글의 답글 개수 -->
+	<select id="commentGroupTotalSelect" resultType="int">
+		<![CDATA[
+			SELECT COUNT(SELL_COMMENT_GROUPORD)
+			FROM SELL_COMMENT
+			WHERE SELL_NO = #{sell_no}
+			AND SELL_COMMENT_ORIGINNO = #{sell_comment_originno}
+			AND SELL_COMMENT_STATUS = 0
+			AND SELL_COMMENT_GROUPLAYER = 1
+		]]>
+	</select>
+	
+	<!-- 댓글 하나 검색 -->
+	<select id="sellCommentOneSelect" resultType="sellCommentVO">
+		<![CDATA[
+			SELECT SELL_NO
+		      , SELL_COMMENT_NO
+		      , SELL_COMMENT_ORIGINNO
+		      , SELL_COMMENT_GROUPORD
+		      , SELL_COMMENT_GROUPLAYER
+		      , SELL_COMMENT_WRITER
+		      , SELL_COMMENT_CONTENTS
+		      , SELL_COMMENT_WRITE_DATE
+		      , SELL_COMMENT_SECRET
+		      , SELL_COMMENT_STATUS
+		    FROM SELL_COMMENT A
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+			AND SELL_COMMENT_NO = #{sell_comment_no, jdbcType=INTEGER}
+			ORDER BY SELL_COMMENT_NO
+		]]>
+	</select>
+	
+	<!-- 판매글 댓글 검색 -->
+    <select id="sellCommentSelect" parameterType="java.util.HashMap" resultType="sellCommentVO">
+    	<![CDATA[
+	         SELECT RNUM, S.SELL_NO
+	            , S.SELL_COMMENT_NO
+	            , S.SELL_COMMENT_ORIGINNO
+	            , S.SELL_COMMENT_GROUPORD
+	            , S.SELL_COMMENT_GROUPLAYER
+	            , S.SELL_COMMENT_WRITER
+	              , M.MEMBER_NIC
+	            , S.SELL_COMMENT_CONTENTS
+	            , S.SELL_COMMENT_WRITE_DATE
+	            , S.SELL_COMMENT_SECRET
+	            , S.SELL_COMMENT_STATUS
+	              , S.SELL_COMMENT_RE_CNT FROM 
+	(SELECT  ROWNUM AS RNUM, SELL_NO
+	            , SELL_COMMENT_NO
+	            , SELL_COMMENT_ORIGINNO
+	            , SELL_COMMENT_GROUPORD
+	            , SELL_COMMENT_GROUPLAYER
+	            , SELL_COMMENT_WRITER
+	            , SELL_COMMENT_CONTENTS
+	            , SELL_COMMENT_WRITE_DATE
+	            , SELL_COMMENT_SECRET
+	            , SELL_COMMENT_STATUS
+	              , SELL_COMMENT_RE_CNT
+	              FROM
+	(SELECT          SELL_NO
+	            , SELL_COMMENT_NO
+	            , SELL_COMMENT_ORIGINNO
+	            , SELL_COMMENT_GROUPORD
+	            , SELL_COMMENT_GROUPLAYER
+	            , SELL_COMMENT_WRITER
+	            , SELL_COMMENT_CONTENTS
+	            , SELL_COMMENT_WRITE_DATE
+	            , SELL_COMMENT_SECRET
+	            , SELL_COMMENT_STATUS
+	            , (SELECT COUNT(SELL_COMMENT_NO) 
+	               FROM SELL_COMMENT 
+	               WHERE SELL_COMMENT_GROUPLAYER = A.SELL_COMMENT_NO) 
+	                SELL_COMMENT_RE_CNT
+	          FROM SELL_COMMENT A
+	         WHERE SELL_NO = #{sell_no}
+	         AND SELL_COMMENT_GROUPLAYER = 0
+	         AND SELL_COMMENT_STATUS = 0
+	         ORDER BY SELL_COMMENT_ORIGINNO
+	               , SELL_COMMENT_NO)) S
+	    JOIN MEMBERS M ON S.SELL_COMMENT_WRITER = M.MEMBER_ID
+	    WHERE RNUM BETWEEN #{startIndex} AND ${lastIndex}
+    	]]>
+    </select>
+
+	<!-- 판매글 답글  검색 -->
+	<select id="sellReCommentSelect" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT S.SELL_NO
+				, S.SELL_COMMENT_NO
+				, S.SELL_COMMENT_ORIGINNO
+		      	, S.SELL_COMMENT_GROUPORD
+		      	, S.SELL_COMMENT_GROUPLAYER
+				, S.SELL_COMMENT_WRITER
+				, S.SELL_COMMENT_CONTENTS
+				, S.SELL_COMMENT_WRITE_DATE
+				, S.SELL_COMMENT_SECRET 
+                , B.MEMBER_NIC SELL_COMMENT_WRITER_NIC
+			FROM SELL_COMMENT S
+            JOIN MEMBERS B ON B.MEMBER_ID = S.SELL_COMMENT_WRITER
+			WHERE SELL_NO = #{sell_no}
+			AND SELL_COMMENT_ORIGINNO = #{sell_comment_originno}
+			AND SELL_COMMENT_GROUPLAYER = 1
+			AND SELL_COMMENT_STATUS = 0 
+			ORDER BY SELL_COMMENT_NO
+		]]>
+	</select>
+	
+	<!-- 판매글 댓글 개수 검색 -->
+	<select id="sellCommentCntSelect" resultType="int">
+		<![CDATA[
+			SELECT COUNT(SELL_COMMENT_NO) 
+			FROM SELL_COMMENT 
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER} 
+			AND SELL_COMMENT_STATUS = 0
+			AND SELL_COMMENT_GROUPLAYER = 0
+			ORDER BY SELL_COMMENT_NO
+		]]>
+	</select>
+	
+	<!-- 판매글 댓글의 답글 개수 검색 -->
+	<select id="sellReCommentCntSelect" resultType="int">
+		<![CDATA[
+			SELECT COUNT(SELL_COMMENT_NO) 
+			FROM SELL_COMMENT 
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER} 
+			AND SELL_COMMENT_STATUS = 0
+            AND SELL_COMMENT_GROUPLAYER  = #{sell_comment_grouplayer, jdbcType=INTEGER}
+		]]>
+	</select>
+	
+	<!-- 판매글 댓글 번호 검색 : 가장 큰 수 -->
+	<select id="sellCommentMaxNo" resultType="int">
+		<choose>
+		<when test='sell_comment_no != null'>
+		<![CDATA[
+			SELECT MAX(SELL_COMMENT_NO) 
+			FROM SELL_COMMENT
+		]]>
+		</when>
+		<otherwise>
+		<![CDATA[
+			SELECT COUNT(SELL_COMMENT_NO) 
+			FROM SELL_COMMENT
+		]]>
+		</otherwise>
+		</choose>
+	</select>
+
+	<!-- 하나의 댓글의 답글리스트 검색 -->
+	<select id="sellOneReComment" resultType="sellCommentVO">
+		<![CDATA[
+			SELECT * 
+			FROM SELL_COMMENT 
+			WHERE SELL_COMMENT_ORIGINNO = #{sell_comment_originno}
+			AND SELL_COMMENT_GROUPLAYER = 1
+		]]>
+	</select>
+	
+	<!-- 리뷰 검색하기 -->
+	<select id="selectReview" resultType="java.util.HashMap">
+   		<![CDATA[
+			SELECT A.SELL_NO
+	           ,A.BUYER_ID
+	           ,B.MEMBER_NIC
+	           ,A.REVIEW_CONTENTS
+	           ,A.REVIEW_RATING
+	           ,TO_CHAR(A.REVIEW_WRITE_DATE,'YY/MM/DD') AS REVIEW_WRITE_DATE
+	           ,C.SELL_TITLE
+	          FROM REVIEWS A 
+	         JOIN MEMBERS B ON(A.BUYER_ID = B.MEMBER_ID)
+	         JOIN SELL C ON(A.SELL_NO = C.SELL_NO)
+	         WHERE A.SELL_NO = #{sell_no, jdbcType=INTEGER}
+		]]>
+   </select>
+   
+   <!-- 리뷰 이미지 검색하기 -->
+   <select id="selectReviwImages" resultType="java.util.HashMap">
+   		<![CDATA[
+			SELECT * 
+			FROM REVIEWS_IMAGES 
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+		]]>
+   </select>
+   
+	<!-- 구매자 업데이트 -->
+	<update id="buyerUpdate" parameterType="java.util.HashMap">
+		<![CDATA[
+			UPDATE SELL
+			SET 
+			SELL_BUYER_ID = #{sell_buyer_id, jdbcType=VARCHAR},
+			SELL_STATUS = 2
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+		]]>
+	</update>
+	
+	<!-- 댓글 수정하기 -->
+	<update id="sellCommentUpdate">
+		<![CDATA[
+			UPDATE SELL_COMMENT
+			SET 
+			SELL_COMMENT_CONTENTS = #{sell_comment_contents, jdbcType=VARCHAR},
+			SELL_COMMENT_WRITE_DATE = SYSDATE
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+			AND SELL_COMMENT_NO = #{sell_comment_no, jdbcType=INTEGER}
+		]]>
+	</update>
+	
+	<!-- 판매글 댓글 삭제 -->
+	<update id="sellCommentDelete">
+		UPDATE SELL_COMMENT
+		SET SELL_COMMENT_STATUS = 1 
+		WHERE SELL_NO = #{sell_no, jdbcType=INTEGER} 
+		AND SELL_COMMENT_NO = #{sell_comment_no, jdbcType=INTEGER}
+	</update>
+
+
+</mapper>

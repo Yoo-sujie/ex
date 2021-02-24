@@ -1,0 +1,201 @@
+@charset "UTF-8";
+
+
+/*********** loginPage & joinPage ***********/
+
+div.formBox {
+	width: 100%;
+	max-width: 30%;
+	margin: 30px auto 50px;
+	border: 2px solid #f5f5f5;
+	padding: 30px;
+}
+
+h3 {
+	text-align: center;
+	line-height: 60px;
+	font-family: 'Jua', sans-serif;
+}
+
+div.formBox > img {
+	display: block;
+	margin: 0 auto 15px;
+}
+
+div.formBox > form {
+	width: 100%;
+	margin-top: 20px;
+}
+
+div.formBox > form > input {
+	width: 100%;
+	border: 2px solid #f5f5f5;
+	border-radius: 5px;
+	padding: 10px;
+	box-sizing: border-box;
+	margin: 5px auto 0;
+}
+
+div.formBox > form > button.actionBtn {
+	width:100%;
+	height:45px;
+	text-align: center;
+	display: block;
+    line-height: 45px;
+    background-color: #2097ef;
+    color: #fff;
+    border-radius: 0.5rem;
+    font-family: 'Jua', sans-serif;
+    transition: all 0.4s;
+    margin: 20px auto;
+}
+
+div.formBox > ul.btnList > li {
+	width: 100%;
+	text-align: center;
+	line-height: 25px;
+}
+
+div.formBox > ul.btnList > li > button.moveBtn {
+	transition: all 0.2s;
+}
+
+div.formBox > ul.btnList > li:first-child > button.moveBtn{
+	color: #2097ef;
+}
+
+div.formBox > ul.btnList > li:last-child > button.moveBtn{
+	color: #999;
+	font-size: 12px;
+}
+
+div.formBox > ul.btnList > li > button.moveBtn:hover {
+	text-decoration: underline;
+	color: #2097ef;
+}
+
+/*********** joinPage ***********/
+div.formBox.join {
+	width: 100%;
+	max-width: 40%;
+	margin: 30px auto 50px;
+	border: 2px solid #f5f5f5;
+	padding: 30px;
+}
+
+div.formBox > form > div.field-wrap {
+	width: 100%;
+	height: 50px;
+	position: relative;
+}
+
+div.formBox > form > div.field-wrap.diff {
+	width: 100%;
+	height: 70px;
+	position: relative;
+}
+
+div.formBox > form > div.field-wrap > input,
+div.formBox > form > div.field-wrap > select {
+	width: 100%;
+	border: 2px solid #f5f5f5;
+	border-radius: 5px;
+	padding: 10px;
+	box-sizing: border-box;
+	margin: 5px auto 0;
+}
+
+div.formBox > form > div.field-wrap > input[name="email01"],
+div.formBox > form > div.field-wrap > input[name="email02"],
+div.formBox > form > div.field-wrap > select[name="choose-email"] {
+	width: 31%;
+	float: left;
+	display: block;
+	box-sizing: border-box;
+}
+
+div.formBox > form > div.field-wrap > label {
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	font-size: 12px !important;
+}
+
+div.formBox > form > div.field-wrap.diff > label {
+	top: 53px;
+}
+
+div.formBox > form > div.field-wrap > span {
+	width: 7%;
+	float: left;
+	display: block;
+	line-height: 50px;
+	padding: 0 3px;
+	box-sizing: border-box;
+}
+
+div.formBox.join > form > button.actionBtn {
+	width:100%;
+	height:45px;
+	text-align: center;
+	display: block;
+    line-height: 45px;
+    background-color: #2097ef;
+    color: #fff;
+    border-radius: 0.5rem;
+    font-family: 'Jua', sans-serif;
+    transition: all 0.4s;
+    margin: 20px auto;
+}
+
+/*********** find_Id_Form & find_Pw_Form ***********/
+div.formBox.findWrap > form > span.sub {
+	width: 100%;
+	display: block;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+div.formBox.findWrap > form > div.field-wrap > input[name="writeEmail01"],
+div.formBox.findWrap > form > div.field-wrap > input[name="writeEmail02"],
+div.formBox.findWrap > form > div.field-wrap > select[name="selectEmail"] {
+	width: 31%;
+	float: left;
+	display: block;
+	box-sizing: border-box;
+}
+
+div.formBox.findWrap > form > div.field-wrap > span {
+	width: 7%;
+	float: left;
+	display: block;
+	line-height: 50px;
+	padding: 0 3px;
+	box-sizing: border-box;
+}
+
+/*********** find_Id & find_Pw ***********/
+span.result {
+	width: 100%;
+	max-width: 30%;
+	display: block;
+	text-align: center;
+	margin: 0 auto;
+	padding: 20px;
+	border: 2px solid #f5f5f5;
+}
+
+button.resultBtn {
+	width:100%;
+	max-width: 30%;
+	height:45px;
+	text-align: center;
+	display: block;
+    line-height: 45px;
+    background-color: #2097ef;
+    color: #fff;
+    border-radius: 0.5rem;
+    font-family: 'Jua', sans-serif;
+    transition: all 0.4s;
+    margin: 20px auto;
+}

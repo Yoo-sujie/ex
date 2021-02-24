@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.member.dao.MemberDAO">
+
+	<!-- 로그인 -->
+	
+	<!-- 로그인 시 아이디, 비밀번호 체크 -->
+	<select id="selectLoginCheck" resultType="int"
+		parameterType="java.util.HashMap">
+		<![CDATA[
+		select count(member_id) from members
+		where member_id = #{id}
+		and member_pw = #{pw}
+		]]>
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="getId" resultType="String">
+		select m.member_id
+		from members m
+		where m.member_email=#{email}
+	</select>
+	
+	<!-- 비밀번호 찾을 때 해당 아이디와 이메일 존재하는지 검색, 비밀번호 검색-->
+	<select id="checkUser" parameterType="java.util.HashMap" resultType="String">
+		select m.member_pw
+		from members m
+		where m.member_id=#{writeId, jdbcType=VARCHAR}
+			  and
+			  m.member_email=#{e_mail, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 로그인 한 유저 정보 가져옴; 일반 유저, 관리자 판별 -->
+	<select id="loginGetInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from members
+		where member_id=#{id}
+	</select>
+	
+	<!-- 회원 가입 -->
+	
+	<!-- 회원가입 시 아이디 중복체크 -->
+	<select id="checkId" resultType="int">
+		select COUNT(*) from members
+		where member_id=#{id}
+	</select>
+
+	<!-- 회원가입 시 닉네임 중복체크 -->
+	<select id="checkNick" resultType="int">
+		select COUNT(*) from members
+		where member_nic=#{nickName}
+	</select>
+	
+	<!-- 회원가입 시 핸드폰 중복체크 -->
+	<select id="checkPhone" resultType="int">
+		select COUNT(*) from members
+		where member_phone=#{phone}
+	</select>
+	
+	<!-- 회원가입 시 이메일 중복체크 -->
+	<select id="checkEmail" resultType="int">
+		select COUNT(*) from members
+		where member_email=#{email}
+	</select>
+	
+	<!-- 회원가입 시 insert -->
+	<insert id="signUp" parameterType="java.util.HashMap">
+		insert into members values(
+		#{id}, #{pw}, #{nickName}, #{name}, #{phone},#{email},
+		default, default)
+	</insert>
+	
+	<!-- 마이페이지 -->
+	
+	<!-- 마이페이지용 로그인 유저 정보 -->
+	<select id="getUserInfo" parameterType="String" resultType="MemberVO">
+		select m.member_name,
+			   m.member_id,
+			   m.member_pw,
+			   m.member_nic,
+			   m.member_phone,
+			   m.member_email,
+			   m.member_join_date
+		from members m
+		where m.member_id=#{id}
+	</select>
+	
+	<!-- 마이 페이지 신고 게시글 count -->
+	<select id="getMyPageReport" parameterType="String" resultType="int">
+		select count(*)
+		from report r
+		join sell s on (s.sell_no = r.sell_no)
+		where s.sell_seller_id=#{id}
+			  and
+			  s.sell_status in (0,1,2)
+	</select>
+
+	<!-- 판매 게시글 가져옴 -->
+	<select id="getSellList" parameterType="String" resultType="BoardVO">
+		select s.sell_no, 
+			   s.sell_buyer_id, 
+			   c.sell_category_name, 
+			   s.sell_title, 
+			   s.sell_price, 
+			   p.sell_place_name,
+			   s.sell_date
+		from sell s
+		join sell_categories c on (s.sell_category_no = c.sell_category_no)
+		join sell_place p on (s.sell_place_no = p.sell_place_no)
+		where s.sell_seller_id=#{id}
+			  and
+			  s.sell_status = 2
+	</select>
+
+	<!-- 구매 게시글 가져옴 -->
+	<select id="getBuyList" parameterType="String" resultType="BoardVO">
+		select s.sell_no, 
+			   s.sell_buyer_id,
+			   c.sell_category_name, 
+			   s.sell_title, 
+			   s.sell_price, 
+			   p.sell_place_name,
+			   s.sell_date
+		from sell s
+		join sell_categories c on (s.sell_category_no = c.sell_category_no)
+		join sell_place p on (s.sell_place_no = p.sell_place_no)
+		where s.sell_buyer_id=#{id}
+			  and
+			  s.sell_status = 2
+	</select>
+	
+	<!-- 리뷰 테이블 별점 가져옴 -->
+ 	<select id="getReviewRating" resultType="int">
+		select r.review_rating
+		from reviews r
+		where r.seller_id=#{id}
+	</select>
+	
+	<!-- 마이페이지 닉네임 -->
+	<select id="myPageMyNick" parameterType="String" resultType="String">
+		select m.member_nic
+		from members m
+		where m.member_id=#{id}
+	</select>
+	
+	<!-- 마이페이지 닉네임 중복 체크 -->
+	<select id="myPageNick" resultType="int">
+		select COUNT(*) 
+		from members
+		where member_nic=#{nick}
+	</select>
+	
+	<!-- 마이페이지 핸드폰 -->
+	<select id="myPageMyPhone" parameterType="String" resultType="String">
+		select m.member_phone
+		from members m
+		where m.member_id=#{id}
+	</select>
+	
+	<!-- 마이페이지 핸드폰 중복 체크 -->
+	<select id="myPagePhone" resultType="int">
+		select COUNT(*) 
+		from members
+		where member_phone=#{phone}
+	</select>
+	
+	<!-- 마이페이지 이메일 -->
+	<select id="myPageMyEmail" parameterType="String" resultType="String">
+		select m.member_email
+		from members m
+		where m.member_id=#{id}
+	</select>
+	
+	<!-- 마이페이지 이메일 중복 체크 -->
+	<select id="myPageEmail" resultType="int">
+		select COUNT(*) 
+		from members
+		where member_email=#{email}
+	</select>
+	
+	<!-- 마이페이지 업데이트 -->
+	<update id="myPageUpdate" parameterType="java.util.HashMap">
+		update members
+		set member_pw=#{pw},
+			member_nic=#{nick},
+			member_phone=#{phone},
+			member_email=#{email}
+		where member_id=#{id}
+	</update>
+	
+	<!-- 신고 게시글에서 신고 번호 가져오기 -->
+	<select id="getReportSell" parameterType="String" resultType="BoardVO">
+		select r.sell_no
+		from report r
+        join sell s on (s.sell_no = r.sell_no)
+		where s.sell_seller_id=#{id}
+			  and s.sell_status in (0,1,2)
+	</select>
+	
+	<!-- 신고 게시글 가져오기 -->
+	<select id="getReport" parameterType="list" resultType="java.util.HashMap">
+		select r.sell_no,
+			   s.sell_seller_id,
+			   c.sell_category_name,
+			   s.sell_title,
+			   to_char(s.sell_price, 'L999,999,999') as sell_price,
+			   p.sell_place_name,
+			   to_char(s.sell_date, 'YY/MM/DD') as sell_date,
+			   i.sell_image_no,
+			   i.sell_image
+		from sell s
+		join report r on (s.sell_no = r.sell_no)
+		join sell_images i on (s.sell_no = i.sell_no)
+		join sell_categories c on (s.sell_category_no = c.sell_category_no)
+		join sell_place p on (s.sell_place_no = p.sell_place_no)
+		where 1=1
+		<if test="list != null">
+		and r.sell_no IN
+			 <foreach collection="list" index="index" item='image' open='(' close=')' separator=",">
+				#{image.sell_no}
+			 </foreach>
+		</if>
+		<if test="list == null">
+		and r.sell_no IN (null)
+			 
+		</if>
+			  and
+			  i.sell_image_no = 1
+		order by r.sell_no desc
+	</select>
+	
+	<!-- 구매 내역 -->
+	
+	<!-- 구매 내역 및 페이징 -->
+	<select id="getPurchaseList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select rnum ,
+        	   s.sell_no ,
+        	   s.sell_seller_id ,
+        	   s.sell_category_no ,
+        	   s.sell_category_name ,
+        	   s.sell_title ,
+        	   to_char(s.sell_price, 'L999,999,999') as sell_price,
+        	   s.sell_place_name ,
+        	   s.sell_date, 
+               sell_image
+    	from (select rownum as rnum ,
+                 	 s.sell_no ,
+                  	 s.sell_seller_id ,
+                  	 s.sell_category_no, 
+                  	 c.sell_category_name ,
+                  	 s.sell_title ,
+                 	 s.sell_price ,
+                 	 p.sell_place_name ,
+                 	 to_char(s.sell_date,'YY/MM/DD') as sell_date ,
+                     i.sell_image
+              from sell s join sell_categories c on (s.sell_category_no = c.sell_category_no) 
+              join sell_place p on (s.sell_place_no = p.sell_place_no) 
+              join sell_images i on (s.sell_no = i.sell_no)
+              where s.sell_buyer_id=#{id} 
+              		and s.sell_status = 2 
+              		and i.sell_image_no = 1
+              order by s.sell_no desc) s
+    	where rnum between #{startIndex} and #{lastIndex} 
+	</select>
+ 	
+	<!-- 구매 내역 전체 리스트 int로 가져옴 -->
+	<select id="getTotalCnt" resultType="int">
+		select count(s.sell_no)
+			from sell s 
+			join sell_categories c on (s.sell_category_no = c.sell_category_no)
+			join sell_place p on (s.sell_place_no = p.sell_place_no)
+			where s.sell_buyer_id=#{id}
+	</select>
+	
+	<!-- 판매 내역 -->
+		
+	<!-- 판매 내역 및 페이징 -->
+	<select id="getSalesList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select rnum ,
+        	   s.sell_no ,
+        	   s.sell_buyer_id ,
+        	   s.sell_category_no ,
+        	   s.sell_category_name ,
+        	   s.sell_title ,
+        	   to_char(s.sell_price, 'L999,999,999') as sell_price,
+        	   s.sell_place_name ,
+        	   s.sell_date, 
+               sell_image
+    	from (select rownum as rnum ,
+                 	 s.sell_no ,
+                  	 s.sell_buyer_id ,
+                  	 s.sell_category_no, 
+                  	 c.sell_category_name ,
+                  	 s.sell_title ,
+                 	 s.sell_price ,
+                 	 p.sell_place_name ,
+                 	 to_char(s.sell_date,'YY/MM/DD') as sell_date ,
+                     i.sell_image
+              from sell s join sell_categories c on (s.sell_category_no = c.sell_category_no) 
+              join sell_place p on (s.sell_place_no = p.sell_place_no) 
+              join sell_images i on (s.sell_no = i.sell_no)
+              where s.sell_seller_id=#{id} 
+              		and s.sell_status = 2 
+              		and i.sell_image_no = 1
+              order by s.sell_no desc) s
+    	where rnum between #{startIndex} and #{lastIndex} 
+	</select>
+	
+	<!-- 판매 내역 전체 리스트 int로 가져옴 -->
+	<select id="salesTotalCnt" resultType="int">
+		select count(s.sell_no)
+			from sell s 
+			join sell_categories c on (s.sell_category_no = c.sell_category_no)
+			join sell_place p on (s.sell_place_no = p.sell_place_no)
+			where s.sell_seller_id=#{id}
+			and s.sell_status = 2 
+	</select>
+
+</mapper>

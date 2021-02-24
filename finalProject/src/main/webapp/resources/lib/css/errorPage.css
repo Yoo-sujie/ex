@@ -1,0 +1,71 @@
+div {
+	margin-top: 3%;
+	margin-left: 25%;
+	margin-right: 25%;
+	padding-top: 5%;
+	padding-bottom: 5%;
+	border-top: 1px solid #7b8895;
+	border-bottom: 1px solid #7b8895;
+	text-align: center;
+	font-family: "함초롬돋움";
+}
+
+div img {
+	width: 90%;
+}
+
+@import url(https://fonts.googleapis.com/css?family=BenchNine:700);
+Button {
+  background-color: #7b8895;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'BenchNine', Arial, sans-serif;
+  font-size: 1em;
+  font-size: 22px;
+  line-height: 1em;
+  margin: 15px 40px;
+  outline: none;
+  padding: 12px 40px 10px;
+  position: relative;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+Button:before,
+Button:after {
+  border-color: transparent;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
+  border-style: solid;
+  border-width: 0;
+  content: "";
+  height: 24px;
+  position: absolute;
+  width: 24px;
+}
+Button:before {
+  border-color: #7b8895;
+  border-right-width: 2px;
+  border-top-width: 2px;
+  right: -5px;
+  top: -5px;
+}
+Button:after {
+  border-bottom-width: 2px;
+  border-color: #7b8895;
+  border-left-width: 2px;
+  bottom: -5px;
+  left: -5px;
+}
+Button:hover,
+Button.hover {
+  background-color: #7b8895;
+}
+Button:hover:before,
+Button.hover:before,
+Button:hover:after,
+Button.hover:after {
+  height: 100%;
+  width: 100%;
+}

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kg.fin.seller.dao.SellerDAO">
+
+	<resultMap type="sellerVO" id="sellerResult">
+		<result property="sell_contents"  column="sell_contents"  jdbcType="LONGVARCHAR" javaType="java.lang.String"  
+  			typeHandler="com.kg.fin.handler.MyLongTypeHandler"/>
+	</resultMap>
+	
+	<!-- INSERT -->
+	<!-- 판매글 입력 -->
+	<insert id="sellInsert">
+		<![CDATA[
+			INSERT INTO SELL
+				(sell_no,
+				sell_place_no,
+				sell_place_item_no,
+				sell_seller_id,
+				sell_buyer_id,
+				sell_category_no
+				,sell_title,
+				sell_contents,
+				sell_price,
+				sell_pw,
+				sell_cnt,
+				sell_bargain,
+				sell_acknowledgment,
+				sell_write_date,
+				sell_date,
+				sell_status)
+				
+			VALUES (
+				#{sell_no}, 
+				#{sell_place_no}, 
+				#{sell_place_item_no},
+				#{sell_seller_id},
+				NULL, 
+				#{sell_category_no}, 
+				#{sell_title}, 
+				#{sell_contents},
+				#{sell_price}, 
+				#{sell_pw}, 
+				0, 
+				#{sell_bargain}, 
+				'N', 
+				SYSDATE, 
+				NULL, 
+				0
+			)
+		]]>
+	</insert>
+	
+	<!-- 판매글 사진 입력 -->
+	<insert id="sellImgInsert">
+		<![CDATA[
+			INSERT INTO SELL_IMAGES 
+			VALUES (
+				#{sell_no}, 
+				#{sell_image_no}, 
+				#{sell_image}
+			)
+		]]>
+	</insert>
+
+	<!-- SELECT -->
+	<!-- 회원 아이디로 정보 검색 -->
+	<select id="memberSelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT MEMBER_NAME
+				, MEMBER_NIC 
+				, MEMBER_PHONE
+				, MEMBER_EMAIL
+				, MEMBER_STATUS
+			FROM MEMBERS
+			WHERE MEMBER_ID = #{id, jdbcType=VARCHAR}
+		]]>
+	</select>
+	
+	<!-- 판매글 모두 검색 (관리자 승인된 게시글만) -->
+	<select id="sellAllSelect" resultType="sellerVO" resultMap="sellerResult" parameterType="String">
+		<![CDATA[
+			SELECT SELL_NO
+				, SELL_TITLE
+			FROM SELL
+			WHERE SELL_ACKNOWLEDGMENT = 'Y'
+			ORDER BY SELL_NO DESC
+		]]>
+	</select>
+
+	<!-- 판매글 하나 검색 (리스트에서 클릭 시 상세내용 보기) -->
+	<select id="sellOneSelect" resultType="sellerVO">
+		<![CDATA[
+		SELECT S.SELL_NO
+			, S.SELL_SELLER_ID
+			, S.SELL_BUYER_ID
+			, S.SELL_PLACE_NO
+			, S.SELL_PLACE_ITEM_NO
+			, P.SGG_CODE 
+			, P.SELL_PLACE_NAME
+			, M.MEMBER_NIC 
+        	, S.SELL_CATEGORY_NO
+        	, C.SELL_CATEGORY_NAME
+        	, S.SELL_TITLE
+        	, S.SELL_CONTENTS
+        	, S.SELL_PRICE
+        	, S.SELL_PW
+        	, S.SELL_CNT
+        	, S.SELL_BARGAIN
+        	, S.SELL_ACKNOWLEDGMENT
+        	, S.SELL_WRITE_DATE
+        	, S.SELL_DATE
+        	, S.SELL_STATUS
+        	, I.SELL_IMAGE_NO
+        	, I.SELL_IMAGE
+		FROM SELL S
+		JOIN SELL_PLACE P ON S.SELL_PLACE_NO = P.SELL_PLACE_NO
+		JOIN MEMBERS M ON S.SELL_SELLER_ID = M.MEMBER_ID
+		JOIN SELL_CATEGORIES C ON S.SELL_CATEGORY_NO = C.SELL_CATEGORY_NO
+        JOIN SELL_IMAGES I ON S.SELL_NO = I.SELL_NO
+		WHERE S.SELL_NO = #{sell_no}
+		ORDER BY SELL_IMAGE_NO
+		]]>
+	</select>
+
+	<!-- 판매글 번호 (가장 큰 번호 구하기) : 글 번호+1을 위한 -->
+	<select id="sellNoSelect" resultType="int">
+		<choose>
+		<when test='sell_no != null'>
+		<![CDATA[
+			SELECT MAX(SELL_NO)  
+			FROM SELL
+		]]>
+		</when>
+		<otherwise>
+		<![CDATA[
+			SELECT COUNT(SELL_NO)  
+			FROM SELL
+		]]>		
+		</otherwise>
+		</choose>
+	</select>
+
+	<!-- 판매글 주소 구하기(1) : 서울특별시 -->
+	<select id="sellPlaceSelectSi" resultType="koreasdVO">
+		<![CDATA[
+			SELECT B.SIDO_CODE
+				, A.CTP_KOR_NM 
+			FROM KOREA_SD A 
+			JOIN SELL_PLACE B ON(A.CTPRVN_CD = B.SIDO_CODE) 
+			GROUP BY B.SIDO_CODE,A.CTP_KOR_NM
+		]]>
+	</select>
+	
+	<!-- 판매글 주소 구하기(2) : 은평구 -->
+	<select id="sellPlaceSelectGu" resultType="koreaSggVO">
+		<![CDATA[
+			SELECT B.SGG_CODE
+				, A.SIG_KOR_NM 
+			FROM KOREA_SGG A 
+			JOIN SELL_PLACE B ON(A.SIG_CD = B.SGG_CODE) 
+			WHERE B.SIDO_CODE = #{sido_code} 
+			GROUP BY B.SGG_CODE,A.SIG_KOR_NM
+		]]>
+	</select>
+	
+	<!-- 판매글 주소 구하기(3) : 응암역 -->
+	<select id="sellPlaceSelectStation" resultType="sellPlaceVO">
+		<![CDATA[
+			SELECT SELL_PLACE_NO
+				, SELL_PLACE_NAME 
+			FROM SELL_PLACE 
+			WHERE SGG_CODE = #{sgg_code}
+		]]>
+	</select>
+
+	<!-- 판매글 장소 이름으로 장소 번호 검색하기 -->
+	<select id="sellPlaceOneSelect" resultType="int">
+		<![CDATA[
+			SELECT SELL_PLACE_NO
+			FROM SELL_PLACE
+			WHERE SELL_PLACE_NAME = #{sell_place_name}
+		]]>
+	</select>
+
+	<!-- 판매글 카테고리 검색(1) : 00 패션 -->
+	<select id="sellCategorySelectLarge" resultType="sellCategoryVO">
+		<![CDATA[
+			SELECT SELL_CATEGORY_NO
+				, SELL_CATEGORY_NAME  
+			FROM SELL_CATEGORIES
+			WHERE SELL_CATEGORY_NO LIKE '__'
+		]]>
+	</select>
+	
+	<!-- 판매글 카테고리 검색(2) : 0001 여성 의류 -->
+	<select id="sellCategorySelect" resultType="sellCategoryVO">
+		<![CDATA[
+			SELECT SELL_CATEGORY_NO
+				, SELL_CATEGORY_NAME  
+			FROM SELL_CATEGORIES
+			WHERE SELL_CATEGORY_NO LIKE #{sell_category_no} || '__'
+		]]>
+	</select>
+	
+	<!-- 판매글 보관함 검색 -->
+	<select id="sellPlaceItemCnt" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT SELL_PLACE_ITEM_NO
+      			,CASE WHEN SELL_PLACE_ITEM_NO IN (SELECT SELL_PLACE_ITEM_NO 
+      											FROM SELL WHERE SELL_STATUS = 0 AND SELL_PLACE_NO = #{item}) 
+      			THEN 'N' ELSE 'Y' END AS YN
+    			FROM SELL_PLACE_ITEM WHERE SELL_PLACE_NO = #{item}
+		]]>
+	</select>
+
+	<!-- 판매글 조회수 검색 -->
+	<select id="sellCntSelect" resultType="int">
+		<![CDATA[
+			SELECT SELL_CNT
+			FROM SELL
+			WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+		]]>
+	</select>
+	
+	
+	
+	<select id="mainSellListView" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT RNUM
+      		  ,SELL_NO
+      		  ,SELL_PLACE_NAME
+      		  ,SELL_IMAGE
+      		  ,SELL_CATEGORY_NAME
+      		  ,SELL_TITLE
+      		  ,CASE WHEN LENGTH(SELL_TITLE) > 10 THEN SUBSTR(SELL_TITLE,0,8)||'...' ELSE SELL_TITLE END AS SELL_TITLE_STR
+      		  ,SELL_PRICE
+      		  ,MEMBER_NIC
+      		  ,SELL_STATUS
+      		  ,SELL_CNT
+      		  ,SELL_WRITE_DATE
+      		  ,CARD_HEADER
+      		  FROM (SELECT ROWNUM AS RNUM
+      ,SELL_NO
+      ,SELL_PLACE_NAME
+      ,SELL_IMAGE
+      ,SELL_CATEGORY_NAME
+      ,SELL_TITLE
+      ,SELL_PRICE
+      ,MEMBER_NIC
+      ,SELL_STATUS
+      ,SELL_CNT
+      ,SELL_WRITE_DATE
+      ,CARD_HEADER
+      FROM(SELECT A.SELL_NO
+                  ,B.SELL_PLACE_NAME
+                  ,E.SELL_IMAGE
+                  ,C.SELL_CATEGORY_NAME
+                  ,A.SELL_TITLE
+                  ,TO_CHAR(A.SELL_PRICE,'L99,999,999') AS SELL_PRICE
+                  ,D.MEMBER_NIC
+                  ,CASE WHEN A.SELL_STATUS = 0 THEN '판매중' WHEN A.SELL_STATUS = 1 THEN '거래중' WHEN A.SELL_STATUS = 2 THEN '판매완료' END AS SELL_STATUS
+                  ,A.SELL_CNT
+                  ,CASE WHEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') != TO_CHAR(SYSDATE,'YY/MM/DD') THEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') ELSE TO_CHAR(A.SELL_WRITE_DATE,'HH24:MI:SS') END AS SELL_WRITE_DATE
+                  ,CASE WHEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD') THEN 'NEW' WHEN A.SELL_CNT > 10 THEN 'HOT' ELSE 'NOT' END AS CARD_HEADER
+              FROM SELL A
+              JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+              JOIN SELL_CATEGORIES C ON(A.SELL_CATEGORY_NO = C.SELL_CATEGORY_NO)
+              JOIN MEMBERS D ON(A.SELL_SELLER_ID = D.MEMBER_ID)
+              LEFT JOIN SELL_IMAGES E ON(A.SELL_NO = E.SELL_NO)
+              WHERE 1=1
+              		  AND A.SELL_STATUS != 3
+              		  AND A.SELL_ACKNOWLEDGMENT = 'Y'
+              		  AND (E.SELL_IMAGE_NO = 1 OR E.SELL_IMAGE_NO IS NULL)   
+		                
+		              ORDER BY A.SELL_WRITE_DATE DESC,A.SELL_PLACE_NO
+              		  ))
+  			  WHERE RNUM BETWEEN 1 AND 8
+		]]>
+		
+		
+	</select>
+	<!-- 최신 리뷰 -->
+	<select id="mainSellReviewListView" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT RNUM
+      		  ,SELL_NO
+      		  ,SELL_PLACE_NAME
+      		  ,REVIEWS_IMAGE
+      		  ,SELL_CATEGORY_NAME
+      		  ,SELL_TITLE
+      		  ,CASE WHEN LENGTH(SELL_TITLE) > 10 THEN SUBSTR(SELL_TITLE,0,8)||'...' ELSE SELL_TITLE END AS SELL_TITLE_STR
+      		  ,SELL_PRICE
+      		  ,REVIEW_WRITE_DATE
+      		  ,CARD_HEADER
+      		  FROM (SELECT ROWNUM AS RNUM
+      ,SELL_NO
+      ,SELL_PLACE_NAME
+      ,REVIEWS_IMAGE
+      ,SELL_CATEGORY_NAME
+      ,SELL_TITLE
+      ,SELL_PRICE
+      ,REVIEW_WRITE_DATE
+      ,CARD_HEADER
+      FROM(SELECT A.SELL_NO
+                  ,B.SELL_PLACE_NAME
+                  ,G.REVIEWS_IMAGE
+                  ,C.SELL_CATEGORY_NAME
+                  ,A.SELL_TITLE
+                  ,TO_CHAR(A.SELL_PRICE,'L99,999,999') AS SELL_PRICE
+                  ,CASE WHEN TO_CHAR(F.REVIEW_WRITE_DATE,'YY/MM/DD') != TO_CHAR(SYSDATE,'YY/MM/DD') THEN TO_CHAR(F.REVIEW_WRITE_DATE,'YY/MM/DD') ELSE TO_CHAR(F.REVIEW_WRITE_DATE,'HH24:MI:SS') END AS REVIEW_WRITE_DATE
+                  ,CASE WHEN TO_CHAR(F.REVIEW_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD') THEN 'NEW' WHEN A.SELL_CNT > 10 THEN 'HOT' ELSE 'NOT' END AS CARD_HEADER
+              FROM SELL A
+              JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+              JOIN SELL_CATEGORIES C ON(A.SELL_CATEGORY_NO = C.SELL_CATEGORY_NO)
+              JOIN MEMBERS D ON(A.SELL_SELLER_ID = D.MEMBER_ID)
+              JOIN REVIEWS F ON(A.SELL_NO = F.SELL_NO)
+              JOIN REVIEWS_IMAGES G ON(F.SELL_NO = G.SELL_NO)
+              WHERE 1=1
+              		  AND A.SELL_STATUS != 3
+              		  AND A.SELL_ACKNOWLEDGMENT = 'Y'
+		                AND (G.REVIEWS_IMAGE_NO = 1 OR G.REVIEWS_IMAGE_NO IS NULL) 
+		              ORDER BY F.REVIEW_WRITE_DATE DESC,A.SELL_PLACE_NO))
+  			  WHERE RNUM BETWEEN 1 AND 3
+		]]>
+		
+		
+	</select>	
+	<!-- UPDATE -->
+	<!-- 판매글 업데이트 : 게시글 번호로 검색 -->
+	<update id="sellUpdate">
+		<![CDATA[
+			UPDATE SELL
+			SET SELL_PLACE_NO = #{sell_place_no},
+				SELL_PLACE_ITEM_NO = #{sell_place_item_no},
+				SELL_CATEGORY_NO = #{sell_category_no}, 
+				SELL_TITLE = #{sell_title}, 
+				SELL_CONTENTS = #{sell_contents},
+				SELL_PRICE = #{sell_price}, 
+				SELL_PW = #{sell_pw},
+				SELL_BARGAIN = #{sell_bargain}, 
+				SELL_ACKNOWLEDGMENT = 'N'
+			WHERE SELL_NO = #{sell_no}
+		]]>
+	</update>
+	
+	<!-- 판매글 업데이트(이미지) : 게시글 번호로 검색 -->
+	<update id="sellImgUpdate">
+		<![CDATA[
+			UPDATE SELL_IMAGES
+			SET SELL_IMAGE = #{sell_image} 
+			WHERE SELL_NO = #{sell_no} 
+			AND SELL_IMAGE_NO = #{sell_image_no}
+		]]>
+	</update>
+	
+	<!-- 판매글 삭제 -->
+	<update id="sellDelete">
+		UPDATE SELL
+		SET SELL_STATUS = 3
+		WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+	</update>
+	
+	<!-- 판매글 조회수 업데이트 -->
+	<update id="sellCntUpdate">
+		UPDATE SELL
+		SET SELL_CNT = #{sell_cnt, jdbcType=INTEGER}
+		WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+	</update>
+
+
+	<!-- DELETE -->
+	<!-- 판매글(이미지) 삭제 -->
+	<!-- <delete id="sellImgDelete">
+		DELETE 
+		FROM SELL_IMAGES 
+		WHERE SELL_NO = #{sell_no, jdbcType=INTEGER}
+	</delete> -->
+
+
+</mapper>

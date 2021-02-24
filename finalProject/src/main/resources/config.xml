@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="java.util.HashMap" alias="java.util.HashMap"></typeAlias> 
+		<typeAlias type="com.kg.fin.buyer.vo.BuyerVO" alias="buyerVO" />
+		<typeAlias type="com.kg.fin.seller.vo.SellerVO" alias="sellerVO"/>
+		<typeAlias type="com.kg.fin.sellImg.vo.SellImgVO" alias="sellImgVO"/>
+		<typeAlias type="com.kg.fin.sellPlace.vo.SellPlaceVO" alias="sellPlaceVO"/>
+		<typeAlias type="com.kg.fin.sellComment.vo.SellCommentVO" alias="sellCommentVO"/>
+		<typeAlias type="com.kg.fin.koreasd.vo.KoreasdVO" alias="koreasdVO"/>
+		<typeAlias type="com.kg.fin.koreasgg.vo.KoreaSggVO" alias="koreaSggVO"/>
+		<typeAlias type="com.kg.fin.sellCategory.vo.SellCategoryVO" alias="sellCategoryVO"/>
+		<typeAlias type="com.kg.fin.member.board.vo.BoardVO" alias="BoardVO"/>
+		<typeAlias type="com.kg.fin.manager.vo.ApprovalVO" alias="ApprovalVO"/>
+		<typeAlias type="com.kg.fin.manager.vo.ManagerDetailVO" alias="managerDetailVO"/>
+		<typeAlias type="com.kg.fin.manager.vo.MemberStoppedVO" alias="memberStoppedVO"/>
+		<typeAlias type="com.kg.fin.member.board.vo.ReportVO" alias="ReportVO"/>
+		<typeAlias type="com.kg.fin.member.board.vo.MemberVO" alias="MemberVO"/>
+		<typeAlias type="com.kg.fin.reviews.vo.ReviewsVO" alias="ReviewsVO"/>
+	</typeAliases>
+	
+	
+	<typeHandlers>
+        <typeHandler handler="com.kg.fin.handler.MyLongTypeHandler" jdbcType="LONGVARCHAR" javaType="java.lang.String"/>
+	</typeHandlers>
+	
+	<mappers>
+		
+		<mapper resource="mapper/member/member.xml" />
+		<mapper resource="mapper/buyer/buyer.xml" />
+		<mapper resource="mapper/map/map.xml" />
+		<mapper resource="mapper/manager/manager.xml" />
+		<mapper resource="mapper/search/search.xml" />
+		<mapper resource="mapper/seller/seller.xml" />
+		<mapper resource="mapper/serviceCenter/serviceCenter.xml" />
+	</mappers>
+</configuration>
+
+
+
+

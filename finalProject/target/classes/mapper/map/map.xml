@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.map.dao.MapDAO">
+
+
+
+
+	<select id="selectMapList" resultType="java.util.HashMap" >
+		<![CDATA[
+		select * from store_imsi
+		]]>
+		
+		
+	</select>
+
+	
+
+
+	<select id="sellListView" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT RNUM
+      		  ,SELL_PLACE_NAME
+      		  ,SELL_PLACE_NO
+      		  ,CNT 
+      		FROM (SELECT ROWNUM AS RNUM 
+      					,SELL_PLACE_NO
+      					,SELL_PLACE_NAME
+      					,CNT
+  					FROM (SELECT B.SELL_PLACE_NAME 
+  								,B.SELL_PLACE_NO
+  								,COUNT(A.SELL_NO) AS CNT
+  							FROM SELL A
+  							RIGHT JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+  								WHERE 1=1
+		]]>
+		<if test="menu eq 'SELL_SD'">
+			and B.SIDO_CODE = #{code}
+		</if>
+		<if test="menu eq 'SELL_SGG'">
+			and B.SGG_CODE = #{code}		
+		</if>
+		
+		
+		<![CDATA[
+								GROUP BY B.SELL_PLACE_NO,B.SELL_PLACE_NAME
+  								ORDER BY CNT)
+  							)
+  			WHERE RNUM BETWEEN #{startIndex} AND #{lastIndex}
+			]]>
+	</select>
+
+
+
+	<select id="sellListCnt" resultType="int" >
+		<![CDATA[
+		SELECT COUNT(RNUM) 
+      		FROM (SELECT ROWNUM AS RNUM 
+      					,SELL_PLACE_NAME
+      					,CNT
+  					FROM (SELECT B.SELL_PLACE_NAME 
+  								,COUNT(A.SELL_NO) AS CNT
+  							FROM SELL A
+  							RIGHT JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+  								WHERE 1=1
+		]]>
+		<if test="menu eq 'SELL_SD'">
+			and B.SIDO_CODE = #{code}
+		</if>
+		<if test="menu eq 'SELL_SGG'">
+			and B.SGG_CODE = #{code}		
+		</if>
+		
+		
+		<![CDATA[
+								GROUP BY B.SELL_PLACE_NO,B.SELL_PLACE_NAME
+  								ORDER BY CNT)
+  							)
+			]]>
+		
+		
+	</select>
+
+
+	<select id="bigCategoryList" resultType="java.util.HashMap" >
+		SELECT SELL_CATEGORY_NO,SELL_CATEGORY_NAME FROM SELL_CATEGORIES WHERE SELL_CATEGORY_NO LIKE '__'
+	</select>
+	
+	<select id="middleCategoryList" resultType="java.util.HashMap" parameterType="String">
+		SELECT SELL_CATEGORY_NO,SELL_CATEGORY_NAME FROM SELL_CATEGORIES WHERE SELL_CATEGORY_NO LIKE #{no} || '__'
+	</select>
+
+
+
+	
+	
+
+	
+	
+</mapper>

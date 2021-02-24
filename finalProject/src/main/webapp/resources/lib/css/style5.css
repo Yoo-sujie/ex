@@ -1,0 +1,324 @@
+.seller_page {
+	font-family: "함초롬돋움";
+}
+
+
+@import url(https://fonts.googleapis.com/css?family=BenchNine:700);
+.sell_click_btn {
+  background-color: #343a40;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'BenchNine', Arial, sans-serif;
+  font-size: 1em;
+  font-size: 22px;
+  line-height: 1em;
+  margin: 15px 40px;
+  outline: none;
+  padding: 12px 40px 10px;
+  position: relative;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.sell_click_btn:before,
+.sell_click_btn:after {
+  border-color: transparent;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
+  border-style: solid;
+  border-width: 0;
+  content: "";
+  height: 24px;
+  position: absolute;
+  width: 24px;
+}
+.sell_click_btn:before {
+  border-color: #343a40;
+  border-right-width: 2px;
+  border-top-width: 2px;
+  right: -5px;
+  top: -5px;
+}
+.sell_click_btn:after {
+  border-bottom-width: 2px;
+  border-color: #343a40;
+  border-left-width: 2px;
+  bottom: -5px;
+  left: -5px;
+}
+.sell_click_btn:hover,
+.sell_click_btn.hover {
+  background-color: #343a40;
+}
+.sell_click_btn:hover:before,
+.sell_click_btn.hover:before,
+.sell_click_btn:hover:after,
+.sell_click_btn.hover:after {
+  height: 100%;
+  width: 100%;
+}
+
+.sell_click_btn2 {
+  background-color: #7b8895;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'BenchNine', Arial, sans-serif;
+  font-size: 1em;
+  font-size: 22px;
+  line-height: 1em;
+  margin: 15px 40px;
+  outline: none;
+  padding: 12px 40px 10px;
+  position: relative;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.sell_click_btn2:before,
+.sell_click_btn2:after {
+  border-color: transparent;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
+  border-style: solid;
+  border-width: 0;
+  content: "";
+  height: 24px;
+  position: absolute;
+  width: 24px;
+}
+.sell_click_btn2:before {
+  border-color: #7b8895;
+  border-right-width: 2px;
+  border-top-width: 2px;
+  right: -5px;
+  top: -5px;
+}
+.sell_click_btn2:after {
+  border-bottom-width: 2px;
+  border-color: #7b8895;
+  border-left-width: 2px;
+  bottom: -5px;
+  left: -5px;
+}
+.sell_click_btn2:hover,
+.sell_click_btn2.hover {
+  background-color: #7b8895;
+}
+.sell_click_btn2:hover:before,
+.sell_click_btn2.hover:before,
+.sell_click_btn2:hover:after,
+.sell_click_btn2.hover:after {
+  height: 100%;
+  width: 100%;
+}
+
+#popup {
+	width: 30%;
+	margin-top: 1080px;
+	margin-left: 500px;
+	position: absolute;
+	border: 1px solid;
+}
+
+.popup_close img {
+	width: 18px;
+}
+
+.sell_pw {
+	width: 100%;
+	text-align: center;
+}
+
+.sell_button {
+	width: 100%;
+	text-align: center;
+	padding-bottom: 200px;
+}
+
+.item_class {
+  background:#343a40;
+  color:#343a40;
+  border:none;
+  position:relative;
+  height:60px;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+  font-size: 20px;
+}
+
+.item_class_d {
+	font-size: 20px;
+}
+
+.item_class:hover{
+  background:#fff;
+  color:#343a40;
+}
+.item_class:before, .item_class:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #343a40;
+  transition:400ms ease all;
+}
+.item_class:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.item_class:hover:before, .item_class:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+
+
+
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 1px solid #BDBDBD;
+}
+
+input[type="radio"] {
+    display:none;
+}
+
+input[type="radio"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-2px 10px 0 0;
+    vertical-align:middle;
+    background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/check_radio_sheet.png) -38px top no-repeat;
+    cursor:pointer;
+}
+
+input[type="radio"]:checked + label span {
+    background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/check_radio_sheet.png) -57px top no-repeat;
+}
+
+.sell_title {
+	width: 100%;
+}
+
+.seller_head {
+	margin-top: 5%;
+	width: 100%;
+	height: 200px;
+	background-color: #343a40;
+	color: white;
+}
+
+.seller_head h1 {
+	padding-top: 80px;
+	margin-left: 10%;
+}
+
+.seller_head small {
+	margin-left: 2%;
+	color: #FFFFFF;
+	font-size: 15px;
+}
+
+.seller_head_S {
+	margin-top: 5%;
+	margin-left: 15%;
+	width: 70%;
+}
+
+.popup_close a {
+	padding-left: 96%;
+}
+
+.profile-left-icon img, .profile-left-icon2 img {
+	width: 18px;
+}
+
+.profile-left-icon small {
+	color: #7b8895;
+}
+
+.img_table {
+	margin-top: 3%;
+	width: 100%;
+	text-align: center;
+}
+
+.item_class {
+	background-color: #FFFFFF;
+	border: 1px solid #D5D5D5;
+	margin: 20px;
+	width: 100px;
+	height: 200px;
+}
+
+.item_class_d {
+	background-color: #D5D5D5;
+	border: 1px solid #D5D5D5;
+	margin: 20px;
+	width: 100px;
+	height: 200px;
+}
+
+
+.selectbox { 
+	width: 300px;
+   	height: 50px;
+  	border: 1px solid red;
+   	border-radius: 10px; 
+   	position: relative; 
+   	border: 1px solid #999; /* 테두리 설정 */ 
+   	z-index: 1; 
+ }
+ 
+ .selectbox:before { /* 화살표 대체 */ 
+	 content: ""; 
+	 position: absolute; 
+	 top: 50%; 
+	 right: 15px; 
+	 width: 0; 
+	 height: 0; 
+	 margin-top: -1px; 
+	 border-left: 5px solid transparent; 
+	 border-right: 5px solid transparent; 
+	 border-top: 5px solid #333; 
+ } 
+ 
+ .selectbox label { 
+	 position: absolute; 
+	 top: 1px; /* 위치정렬 */ 
+	 left: 5px; /* 위치정렬 */ 
+	 padding: .8em .5em; /* select의 여백 크기 만큼 */ 
+	 color: #000000; 
+	 z-index: -1; /* IE8에서 label이 위치한 곳이 클릭되지 않는 것 해결 */ 
+ } 
+ 
+ .selectbox select { 
+	 width: 100%; 
+	 height: auto; /* 높이 초기화 */ 
+	 line-height: normal; /* line-height 초기화 */ 
+	 font-family: inherit; /* 폰트 상속 */ 
+	 padding: .8em .5em; /* 여백과 높이 결정 */ 
+	 border: 0; opacity: 0; /* 숨기기 */ 
+	 filter:alpha(opacity=0); /* IE8 숨기기 */ 
+	 -webkit-appearance: none; /* 네이티브 외형 감추기 */ 
+	 -moz-appearance: none; 
+	 appearance: none; 
+ }
+ 

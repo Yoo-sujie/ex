@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.search.dao.SearchDAO">
+
+
+
+
+
+	<select id="sellPlace" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT SELL_PLACE_NO,SELL_PLACE_NAME FROM SELL_PLACE
+		]]>
+		
+		
+	</select>
+
+	<select id="sellCategory" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT SELL_CATEGORY_NO,SELL_CATEGORY_NAME FROM SELL_CATEGORIES WHERE SELL_CATEGORY_NO LIKE '__'
+		]]>
+		
+		
+	</select>
+	
+	
+	<select id="sellList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		<![CDATA[
+		SELECT RNUM
+      		  ,SELL_NO
+      		  ,SELL_PLACE_NAME
+      		  ,SELL_IMAGE
+      		  ,SELL_CATEGORY_NAME
+      		  ,SELL_TITLE
+      		  ,CASE WHEN LENGTH(SELL_TITLE) > 8 THEN SUBSTR(SELL_TITLE,0,6)||'...' ELSE SELL_TITLE END AS SELL_TITLE_STR
+      		  ,SELL_PRICE
+      		  ,MEMBER_NIC
+      		  ,SELL_STATUS
+      		  ,SELL_CNT
+      		  ,SELL_WRITE_DATE
+      		  ,CARD_HEADER
+      		  FROM (SELECT ROWNUM AS RNUM
+      ,SELL_NO
+      ,SELL_PLACE_NAME
+      ,SELL_IMAGE
+      ,SELL_CATEGORY_NAME
+      ,SELL_TITLE
+      ,SELL_PRICE
+      ,MEMBER_NIC
+      ,SELL_STATUS
+      ,SELL_CNT
+      ,SELL_WRITE_DATE
+      ,CARD_HEADER
+      FROM(SELECT A.SELL_NO
+                  ,B.SELL_PLACE_NAME
+                  ,E.SELL_IMAGE
+                  ,C.SELL_CATEGORY_NAME
+                  ,A.SELL_TITLE
+                  ,TO_CHAR(A.SELL_PRICE,'L99,999,999') AS SELL_PRICE
+                  ,D.MEMBER_NIC
+                  ,CASE WHEN A.SELL_STATUS = 0 THEN '판매중' WHEN A.SELL_STATUS = 1 THEN '거래중' WHEN A.SELL_STATUS = 2 THEN '판매완료' END AS SELL_STATUS
+                  ,A.SELL_CNT
+                  ,CASE WHEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') != TO_CHAR(SYSDATE,'YY/MM/DD') THEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') ELSE TO_CHAR(A.SELL_WRITE_DATE,'HH24:MI:SS') END AS SELL_WRITE_DATE
+                  ,CASE WHEN TO_CHAR(A.SELL_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD') THEN 'NEW' WHEN A.SELL_CNT > 10 THEN 'HOT' ELSE 'NOT' END AS CARD_HEADER
+              FROM SELL A
+              JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+              JOIN SELL_CATEGORIES C ON(A.SELL_CATEGORY_NO = C.SELL_CATEGORY_NO)
+              JOIN MEMBERS D ON(A.SELL_SELLER_ID = D.MEMBER_ID)
+              LEFT JOIN SELL_IMAGES E ON(A.SELL_NO = E.SELL_NO)
+              WHERE 1=1
+              		  AND A.SELL_STATUS != 3
+              		  AND A.SELL_ACKNOWLEDGMENT = 'Y'
+              		  AND (E.SELL_IMAGE_NO = 1 OR E.SELL_IMAGE_NO IS NULL)
+		                ]]>
+		              <if test="sellPlace != 'all' and sellPlace != null">
+						AND A.SELL_PLACE_NO = #{sellPlace}		
+					  </if>
+					  <if test="category != null">
+						AND A.SELL_CATEGORY_NO LIKE #{category}		
+					  </if>
+					  <if test="searchItem == 1">
+						AND A.SELL_TITLE LIKE '%'||#{searchTxt}||'%'	
+					  </if>
+					  <if test="searchItem == 2">
+						AND A.SELL_CONTENTS LIKE '%'||#{searchTxt}||'%'		
+					  </if>
+					  <if test="searchItem == 3">
+						AND (A.SELL_TITLE LIKE '%'||#{searchTxt}||'%'  OR A.SELL_CONTENTS LIKE '%'||#{searchTxt}||'%') 		
+					  </if>
+					  <if test="minPrice != null and minPrice != ''"  >
+					  	<![CDATA[  
+						AND A.SELL_PRICE > #{minPrice}
+								]]>
+					  </if>
+					  <if test="maxPrice != nul and minPrice != ''">
+					  	<![CDATA[  
+						AND A.SELL_PRICE < #{maxPrice}
+								]]>
+					  </if>
+					  <if test="sellStatus != 'all' and sellStatus != null">
+						AND A.SELL_STATUS = #{sellStatus}		
+					  </if>
+					  
+					  <if test="startDate != '' and startDate != null">
+					  	<![CDATA[  
+						AND A.SELL_WRITE_DATE >= #{startDate}
+								]]>
+					  </if>
+					  
+					  <if test="endDate != '' and endDate != null">
+					  	<![CDATA[  
+						AND A.SELL_WRITE_DATE <= #{endDate}
+								]]>
+					  </if>
+					  
+		              <![CDATA[         
+		                
+		              ORDER BY A.SELL_WRITE_DATE DESC,A.SELL_PLACE_NO
+              		  ))
+  			  WHERE RNUM BETWEEN #{startIndex} AND #{lastIndex}
+		]]>
+		
+		
+	</select>
+
+
+
+	<select id="sellListTotalCnt" parameterType="java.util.HashMap" resultType="int" >
+		<![CDATA[
+      		  SELECT COUNT(A.SELL_NO)
+              	FROM SELL A
+              	JOIN SELL_PLACE B ON(A.SELL_PLACE_NO = B.SELL_PLACE_NO)
+              	JOIN SELL_CATEGORIES C ON(A.SELL_CATEGORY_NO = C.SELL_CATEGORY_NO)
+              	JOIN MEMBERS D ON(A.SELL_SELLER_ID = D.MEMBER_ID)
+              	WHERE 1=1
+		        AND A.SELL_STATUS != 3
+		        AND A.SELL_ACKNOWLEDGMENT = 'Y'
+		          ]]>
+		              <if test="sellPlace != 'all' and sellPlace != null">
+						AND A.SELL_PLACE_NO = #{sellPlace}		
+					  </if>
+					  <if test="category != null">
+						AND A.SELL_CATEGORY_NO LIKE #{category}		
+					  </if>
+					  <if test="searchItem == 1">
+						AND A.SELL_TITLE LIKE '%'||#{searchTxt}||'%'	
+					  </if>
+					  <if test="searchItem == 2">
+						AND A.SELL_CONTENTS LIKE '%'||#{searchTxt}||'%'		
+					  </if>
+					  <if test="searchItem == 3">
+						AND (A.SELL_TITLE LIKE '%'||#{searchTxt}||'%'  OR A.SELL_CONTENTS LIKE '%'||#{searchTxt}||'%') 		
+					  </if>
+					  <if test="minPrice != null and minPrice != ''"  >
+					  	<![CDATA[  
+						AND A.SELL_PRICE > #{minPrice}
+								]]>
+					  </if>
+					  <if test="maxPrice != nul and minPrice != ''">
+					  	<![CDATA[  
+						AND A.SELL_PRICE < #{maxPrice}
+								]]>
+					  </if>
+					  <if test="sellStatus != 'all' and sellStatus != null">
+						AND A.SELL_STATUS = #{sellStatus}		
+					  </if>
+					  
+					  <if test="startDate != '' and startDate != null">
+					  	<![CDATA[  
+						AND A.SELL_WRITE_DATE >= #{startDate}
+								]]>
+					  </if>
+					  
+					  <if test="endDate != '' and endDate != null">
+					  	<![CDATA[  
+						AND A.SELL_WRITE_DATE <= #{endDate}
+								]]>
+					  </if>
+					  
+		              <![CDATA[         
+		                
+		                
+		                
+              		  
+		]]>
+		
+		
+	</select>
+
+
+
+
+</mapper>

@@ -1,0 +1,310 @@
+@charset "UTF-8";
+
+h3 {
+	text-align: center;
+	line-height: 80px;
+	font-family: 'Jua', sans-serif;
+}
+
+ul.myNav {
+	width: 100%;
+	max-width: 30%;
+	height: 50px;
+	margin: 0 auto 30px;
+	font-family: 'Jua', sans-serif;
+	display: table;
+	table-layout: fixed;
+	font-size: 16px;
+}
+
+ul.myNav > li {
+	display: table-cell;
+	text-align: center;
+	line-height: 50px;
+}
+
+ul.myNav > li > a {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+ul.myNav > li > a.on {
+	border-bottom: 3px solid #2097ef;
+	color: #2097ef;
+}
+
+div.optionArea {
+	width:100%;
+	max-width: 70%;
+	height: 50px;
+	margin: 0 auto;
+}
+
+a.actionBtn, input.actionBtn {
+	width:80px;
+	height:30px;
+	text-align: center;
+	display: block;
+    line-height: 30px;
+    background-color: #f5f5f5;
+    color: #333;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.4s;
+    font-size: 12px;
+}
+
+a.actionBtn.fleft, input.actionBtn.fleft { float: left; }
+a.actionBtn.fright, input.actionBtn.fright { float: right; }
+
+/*********** editProfile ***********/
+
+div.memberInfo {
+	width: 100%;
+	max-width: 70%;
+	margin: 0 auto;
+	padding: 30px;
+	border: 2px solid #f5f5f5;
+	position: relative;
+}
+
+div.memberInfo > button#popup {
+	width: 20px;
+	height: 20px;
+	font-size: 16px;
+	line-height: 20px;
+	background-color: #2097ef;
+	color: #fff;
+	border-radius: 50%;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+
+div.memberInfo > div.point {
+	width: 100%;
+	height: 80px;
+	text-align: center;
+}
+
+div.memberInfo > div.point > span {
+	width: 100%;
+	font-size: 10px;
+	color: #c1c1c1;
+}
+
+div.memberInfo > div.point > span > strong {
+	color: #343a40;
+	font-size: 18px;
+	line-height: 35px;
+	font-family: 'Jua', sans-serif;
+}
+
+div.memberInfo > ul.cntGroup {
+	width: 100%;
+	max-width: 60%;
+	margin: 0 auto;
+	height: 90px;
+	font-family: 'Jua', sans-serif;
+}
+
+div.memberInfo > ul.cntGroup > li {
+	width: 33.33%;
+	height: 100%;
+	float: left;
+}
+
+div.memberInfo > ul.cntGroup > li > button.cntResult {
+	width: 60px;
+	height: 60px;
+	display:block;
+	border-radius: 50%;
+	background-color: #2097ef;
+	line-height: 60px;
+	text-align: center;
+	color: #fff;
+	font-size: 14px;
+	box-sizing: border-box;
+	margin: 0 auto;
+}
+
+div.memberInfo > ul.cntGroup > li > label.cnt {
+	width:100%; 
+	font-size: 14px;
+	line-height: 30px;
+	text-align: center;
+	float: left;
+	color: #2097ef;
+	font-weight: normal;
+}
+
+table.viewBoard {
+	border-collapse: collapse;
+	width: 100%;
+	max-width: 70%;
+	margin: 30px auto 0;
+	text-align: left;
+}
+
+table.viewBoard > tbody > tr > th, 
+table.viewBoard > tbody > tr > td {
+	padding: 15px;
+	/* border-top: 2px solid #fdfdfd; */
+	box-sizing: border-box;
+}
+
+table.viewBoard > tbody > tr > th {	background-color:#f5f5f5;}
+
+table.viewBoard > tbody > tr.lastChild > td > button.updateBtn{
+	width:100px;
+	height:45px;
+	text-align: center;
+	display: block;
+    line-height: 45px;
+    background-color: #2097ef;
+    color: #fff;
+    border-radius: 0.5rem;
+    font-family: 'Jua', sans-serif;
+    transition: all 0.4s;
+    margin: 0 auto;
+}
+
+table.viewBoard > tbody > tr > td > input.pw,
+table.viewBoard > tbody > tr > td > input.confirm-pw,
+table.viewBoard > tbody > tr > td > input.nick,
+table.viewBoard > tbody > tr > td > input.phone,
+table.viewBoard > tbody > tr > td > input[name="email01"],
+table.viewBoard > tbody > tr > td > input[name="email02"],
+table.viewBoard > tbody > tr > td > select {
+	border: 2px solid #f5f5f5;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+/*********** PurchaseHistory & SalesHistory ***********/
+
+table.listBoard {
+	border-collapse: collapse;
+	width: 100%;
+	max-width: 70%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+table.listBoard tr:hover { background-color:#fdfdfd; }
+
+table.listBoard > tbody { cursor:pointer; }
+
+table.listBoard > thead > tr > th, 
+table.listBoard > tbody > tr > td {
+	padding: 15px;
+	border-bottom: 1px solid #ddd;
+}
+
+table.listBoard > thead > tr > th { background-color:#f5f5f5; }
+
+table.listBoard > tbody > tr > td > a { color: #333; }
+
+
+/*********** page ***********/
+nav.page {
+	border-bottom: 0px;
+	border-top: 0px;
+}
+
+ul.pagination {
+	margin-top: 50px;
+}
+
+.page-link {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+  z-index: 2;
+  color: #0056b3;
+  text-decoration: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.page-link:focus {
+  z-index: 3;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: auto;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
+.pagination-lg .page-link {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.pagination-lg .page-item:first-child .page-link {
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+}
+
+.pagination-lg .page-item:last-child .page-link {
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
+}
+
+.pagination-sm .page-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.pagination-sm .page-item:first-child .page-link {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+}
+
+.pagination-sm .page-item:last-child .page-link {
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+}
+
+.justify-content-center {
+  -ms-flex-pack: center !important;
+  display: flex;
+  justify-content: center !important;
+}

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.fin.serviceCenter.dao.ServiceCenterDAO">
+
+	<select id="noticeListView" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT RNUM
+      		  ,NOTICE_NO
+      		  ,NOTICE_TITLE
+      		  ,NOTICE_WRITER
+      		  ,NOTICE_CNT
+      		  ,NOTICE_WRITE_DATE
+    	FROM (SELECT ROWNUM AS RNUM,
+                 		 NOTICE_NO, 
+                 		 NOTICE_TITLE, 
+                 		 NOTICE_WRITER, 
+                 		 NOTICE_CNT, 
+                 		 CASE WHEN TO_CHAR(NOTICE_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+                 		 	THEN TO_CHAR(NOTICE_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(NOTICE_WRITE_DATE,'YY/MM/DD') END AS NOTICE_WRITE_DATE
+            		FROM NOTICE
+            		ORDER BY NOTICE_NO DESC
+    		)
+   		WHERE RNUM BETWEEN #{startIndex} AND #{lastIndex}
+		]]>
+	</select>
+
+	<select id="noticeListCnt" resultType="int">
+		<![CDATA[
+		SELECT COUNT(NOTICE_NO) 
+        FROM NOTICE
+		]]>
+	</select>
+	
+	<insert id="noticeWriteContents" parameterType="java.util.HashMap">
+		<![CDATA[
+		INSERT INTO NOTICE VALUES(
+            (SELECT NVL(MAX(NOTICE_NO)+1,0)FROM NOTICE),
+            #{writer},
+            #{title},
+            #{contents},
+            DEFAULT,
+            DEFAULT,
+            DEFAULT
+         )
+		]]>
+	</insert>
+
+	<select id="noticeDetailView" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT NOTICE_NO
+      		  ,NOTICE_WRITER
+      		  ,NOTICE_TITLE
+      		  ,NOTICE_CONTENTS
+      		  ,NOTICE_CNT
+      		  ,CASE WHEN TO_CHAR(NOTICE_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+       		   		THEN TO_CHAR(NOTICE_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(NOTICE_WRITE_DATE,'YY/MM/DD') END AS NOTICE_WRITE_DATE
+    	 FROM NOTICE
+    	 WHERE NOTICE_NO = #{no}
+		]]>
+	</select>
+
+	<update id="noticeAddCnt">
+		UPDATE NOTICE SET NOTICE_CNT = (SELECT NOTICE_CNT + 1 FROM NOTICE WHERE NOTICE_NO = #{no}) WHERE NOTICE_NO = #{no} 
+	</update>
+	
+	<delete id="noticeDelete">
+		<![CDATA[
+			DELETE FROM NOTICE 
+			WHERE NOTICE_NO = #{no}
+		]]>
+	</delete>
+	
+	<select id="qnaListView" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT RNUM
+      		  ,SC_QNA_NO
+      		  ,SC_QNA_TITLE
+      		  ,SC_QNA_WRITER
+      		  ,SC_QNA_WRITE_DATE
+      		  ,SC_QNA_STATUS
+    	FROM (SELECT ROWNUM AS RNUM,
+            		 SC_QNA_NO, 
+            		 SC_QNA_TITLE, 
+            		 SC_QNA_WRITER, 
+            		 CASE WHEN TO_CHAR(SC_QNA_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+            		 	THEN TO_CHAR(SC_QNA_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(SC_QNA_WRITE_DATE,'YY/MM/DD') END AS SC_QNA_WRITE_DATE,
+            		 CASE WHEN SC_QNA_STATUS = 0 
+                		THEN '문의대기' ELSE '문의완료' END AS SC_QNA_STATUS
+       		FROM SC_QNA
+       		ORDER BY SC_QNA_NO DESC
+    		)
+   		WHERE RNUM BETWEEN #{startIndex} AND #{lastIndex}
+		]]>
+	</select>
+	
+	<select id="qnaListCnt" resultType="int">
+		<![CDATA[
+		SELECT COUNT(SC_QNA_NO) 
+        FROM SC_QNA
+		]]>
+	</select>
+
+	<select id="qnaDetailView" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT SC_QNA_NO
+      		  ,SC_QNA_TITLE
+      		  ,SC_QNA_WRITER
+      		  ,CASE WHEN TO_CHAR(SC_QNA_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+       		   		THEN TO_CHAR(SC_QNA_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(SC_QNA_WRITE_DATE,'YY/MM/DD') END AS SC_QNA_WRITE_DATE
+       		  ,CASE WHEN SC_QNA_STATUS = 0 
+                	THEN '문의대기' ELSE '문의완료' END AS SC_QNA_STATUS
+       		  ,SC_QNA_CONTENTS
+       	FROM SC_QNA
+       	WHERE SC_QNA_NO = #{no}
+		]]>
+	</select>
+	
+	<insert id="addCmt" parameterType="java.util.HashMap">
+		<![CDATA[
+		INSERT INTO	SC_QNA_COMMENT VALUES(
+			#{no}, 
+			#{writer},
+			#{content},
+			SYSDATE
+		)
+		]]>
+	</insert>
+	
+	<select id="getCmt" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT 
+    		SC_QNA_COMMENT_WRITER, 
+    		SC_QNA_COMMENT_CONTENTS, 
+			CASE WHEN TO_CHAR(SC_QNA_COMMENT_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+				THEN TO_CHAR(SC_QNA_COMMENT_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(SC_QNA_COMMENT_WRITE_DATE,'YY/MM/DD') 
+				END AS SC_QNA_COMMENT_WRITE_DATE
+		FROM SC_QNA_COMMENT
+		WHERE SC_QNA_NO = #{no}
+		]]>
+	</select>
+	
+	<update id="statusChange">
+		UPDATE SC_QNA SET SC_QNA_STATUS = (SELECT COUNT(SC_QNA_NO) FROM SC_QNA_COMMENT WHERE SC_QNA_NO = #{no}) WHERE SC_QNA_NO = #{no}
+	</update>
+	
+	<select id="qnaCmtList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT 
+			B.SC_QNA_NO, 
+    		A.SC_QNA_COMMENT_WRITER, 
+    		A.SC_QNA_COMMENT_CONTENTS, 
+			CASE WHEN TO_CHAR(A.SC_QNA_COMMENT_WRITE_DATE,'YY/MM/DD') = TO_CHAR(SYSDATE,'YY/MM/DD')
+				THEN TO_CHAR(SC_QNA_COMMENT_WRITE_DATE,'HH24:MI') ELSE TO_CHAR(SC_QNA_COMMENT_WRITE_DATE,'YY/MM/DD') 
+				END AS SC_QNA_COMMENT_WRITE_DATE
+		FROM SC_QNA_COMMENT A, SC_QNA B
+		WHERE A.SC_QNA_NO = B.SC_QNA_NO
+		AND B.SC_QNA_NO = #{no}
+		]]>
+	</select>
+
+	<insert id="qnaWriteContents" parameterType="java.util.HashMap">
+		<![CDATA[
+		INSERT INTO SC_QNA VALUES(
+            (SELECT NVL(MAX(SC_QNA_NO)+1,0)FROM SC_QNA),
+            #{writer},
+            #{title},
+            #{contents},
+            SYSDATE,
+            DEFAULT
+         )
+		]]>
+	</insert>
+	
+	<delete id="qnaCmtDelete">
+		<![CDATA[
+			DELETE FROM SC_QNA_COMMENT 
+			WHERE SC_QNA_NO = #{no}
+		]]>
+	</delete>
+	
+	<delete id="qnaDelete">
+		<![CDATA[
+			DELETE FROM SC_QNA 
+			WHERE SC_QNA_NO = #{no}
+		]]>
+	</delete>
+
+</mapper>
+
