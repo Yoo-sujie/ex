@@ -1,0 +1,130 @@
+@charset "utf-8";
+
+.blinking{
+	-webkit-animation:blink 2s ease-in-out infinite alternate;
+    -moz-animation:blink 2s ease-in-out infinite alternate;
+    animation:blink 2s ease-in-out infinite alternate;
+}
+@-webkit-keyframes blink{
+    0% {opacity:0.3;}
+    100% {opacity:1;}
+}
+@-moz-keyframes blink{
+    0% {opacity:0.3;}
+    100% {opacity:1;}
+}
+@keyframes blink{
+    0% {opacity:0.3;}
+    100% {opacity:1;}
+}
+
+.background {
+	background: repeating-linear-gradient(45deg, #3B3942, #3B3942 2px, #38363F 0, #38363F 20px);
+}
+
+footer {
+	background-color: #ffffff;
+	width: 100%;
+}
+
+.logo {
+	height: 50px;
+	width: 100%;
+	background: #252331;
+	opacity: 1;
+}
+nav ul {
+  width: 100%;
+  background-color: #252331;
+  list-style-type: none;
+  /* 마진 패딩 지정하지 않으면 브라우저 기본 스타일을 따라 설정되므로 오버라이딩 필요 */
+  margin: 0;
+  padding: 0;
+}
+
+/* li 는 블록요소인데 inline-block 으로 인라인속성 부여해서 나란히 배치 */
+
+nav ul li {
+  display: inline-block;
+}
+
+.mypage {
+  background-color: #ffffff;
+  width: 100px;
+  text-align: center;
+  font-weight: bold;
+  float: right;
+}
+
+.login {
+  background-color: #252331;;
+  width: 100px;
+  text-align: center;
+  font-weight: bold;
+  float: right;
+}
+
+.mypage a { /* <a> 태그는 인라인 태그 이므로 서브메뉴 항목들이 위 아래로 배치되기 위해 블럭 속성 부여. */
+  display: block;
+  text-decoration: none; /* 글자에 기본적으로 밑줄이 표기되기 때문에, text-decoration:none으로 밑줄 제거. */
+  color: #252331;
+  padding: 16px 16px; /*display로  block 속성을 부여했다고 하여도, a 는 기본적으로 인라인 요소이기 때문에 
+  						width, height 는 적용되지 않음. 따라서 padding 을 이용해 크기 지정. */
+}
+
+.login a {
+	
+  display: block;
+  text-decoration: none;
+  color: white;
+  padding: 16px 16px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  /*background-color: darkorange; */
+  width: 200px;
+  color: #ffffff;
+  padding: 16px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+}
+
+.dropdown-content a {
+  color: #252331;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* dropdown-menu 에는 hover 적용이 안됨 */
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #252331;
+  color: #ffffff;
+}
+
+.dropdown-menu:hover: {
+  background-color: darkorange;
+  color: #ffffff;
+}
+
+
+
